@@ -1,3 +1,5 @@
-export default function Page() {
-  return <h1>Dashboard</h1>;
+import { DashboardView } from "@/components/dashboard/dashboard-view";
+
+export default function DashboardPage() {
+  return <DashboardView />;
 }
