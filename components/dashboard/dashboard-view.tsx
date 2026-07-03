@@ -44,7 +44,7 @@ export function DashboardView() {
 
       {/* Agenda + Recordatorios */}
 
-      <section className="grid gap-8 xl:grid-cols-[1.4fr_0.8fr]">
+      <section className="grid gap-10 xl:grid-cols-[2fr_1fr] items-start">
 
         <TodayWidget />
 
@@ -120,9 +120,9 @@ export function DashboardView() {
 
       {/* Próximos módulos */}
 
-      <section className="grid gap-6 lg:grid-cols-2">
+      <section className="grid gap-8 xl:grid-cols-[2fr_1fr] items-start">
 
-        <Card className="rounded-3xl shadow-lg">
+        <Card className="rounded-3xl border-0 shadow-sm hover:shadow-md transition-all duration-300">
 
           <CardContent className="p-8">
 
@@ -138,21 +138,21 @@ export function DashboardView() {
 
         </Card>
 
-        <Card className="rounded-3xl shadow-lg">
+        <Card className="rounded-3xl border-0 shadow-sm hover:shadow-md transition-all duration-300">
 
           <CardContent className="p-8">
 
-            <h3 className="text-xl font-bold">
-              📖 Versículo del día
-            </h3>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-blue-600">
+  VERSÍCULO DEL DÍA
+</p>
 
-            <p className="mt-3 italic">
-              "Esfuérzate y sé valiente..."
-            </p>
+<h3 className="mt-3 text-2xl font-bold leading-relaxed">
+  "Esfuérzate y sé valiente; no temas ni desmayes."
+</h3>
 
-            <p className="mt-2 text-sm text-muted-foreground">
-              Josué 1:9
-            </p>
+<p className="mt-4 text-base font-medium text-muted-foreground">
+  Josué 1:9
+</p>
 
           </CardContent>
 
