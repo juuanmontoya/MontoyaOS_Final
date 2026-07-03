@@ -1,46 +1,51 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { FocusWidget } from "./widgets/focus-widget";
 import { TodayWidget } from "./widgets/today-widget";
+import { reminders } from "@/data/dashboard";
 
 export function DashboardView() {
   return (
     <div className="space-y-8">
 
-      {/* Bienvenida */}
-      <section className="space-y-6">
+<section className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
 
-        <div className="space-y-2">
+  <div className="max-w-2xl">
 
-  <p className="text-xs font-semibold uppercase tracking-[0.3em] text-blue-600">
-    MIÉRCOLES · 2 JULIO
-  </p>
+    <p className="text-xs font-semibold uppercase tracking-[0.35em] text-blue-600">
+      MIÉRCOLES · 2 JULIO
+    </p>
 
-  <h1 className="text-5xl font-extrabold tracking-tight">
-    Buenos días, Juan
-    <span className="ml-2">👋</span>
-  </h1>
+    <h1 className="mt-3 text-5xl font-extrabold tracking-tight">
+      Buenos días, Juan 👋
+    </h1>
 
-  <div className="flex flex-wrap gap-3 pt-2">
+    <p className="mt-4 text-xl leading-relaxed text-muted-foreground">
+      Todo lo importante.
+      <br />
+      En un solo lugar.
+    </p>
 
-    <span className="rounded-full bg-blue-100 px-4 py-1 text-sm font-semibold text-blue-700">
-      3 eventos
-    </span>
+    <div className="mt-6 flex flex-wrap gap-3">
 
-    <span className="rounded-full bg-amber-100 px-4 py-1 text-sm font-semibold text-amber-700">
-      2 recordatorios
-    </span>
+      <span className="rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold text-blue-700">
+        3 eventos
+      </span>
 
-    <span className="rounded-full bg-red-100 px-4 py-1 text-sm font-semibold text-red-700">
-      Prioridad alta
-    </span>
+      <span className="rounded-full bg-amber-100 px-4 py-2 text-sm font-semibold text-amber-700">
+        2 recordatorios
+      </span>
+
+      <span className="rounded-full bg-red-100 px-4 py-2 text-sm font-semibold text-red-700">
+        Alta prioridad
+      </span>
+
+    </div>
 
   </div>
 
-</div>
+</section>
 
-        <FocusWidget />
-
-      </section>
+<FocusWidget />
 
       {/* Agenda + Recordatorios */}
 
@@ -63,56 +68,27 @@ export function DashboardView() {
   </div>
 
   <div className="space-y-8">
-
-    <div className="border-l-4 border-amber-400 pl-5">
-
-      <p className="text-sm font-semibold uppercase tracking-wide text-amber-600">
-        MAÑANA
+  {reminders.map((reminder) => (
+    <div
+      key={reminder.id}
+      className={`border-l-4 ${reminder.color} pl-5 transition-all duration-200 hover:translate-x-1`}
+    >
+      <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+        {reminder.due}
       </p>
 
       <h3 className="mt-2 text-xl font-semibold">
-        Pagar energía
+        {reminder.title}
       </h3>
 
       <p className="text-muted-foreground">
-        Último día para evitar recargo.
+        {reminder.description}
       </p>
-
     </div>
+  ))}
+</div>
 
-    <div className="border-l-4 border-red-500 pl-5">
-
-      <p className="text-sm font-semibold uppercase tracking-wide text-red-600">
-        EN 3 DÍAS
-      </p>
-
-      <h3 className="mt-2 text-xl font-semibold">
-        Tarjeta de crédito
-      </h3>
-
-      <p className="text-muted-foreground">
-        Fecha límite de pago.
-      </p>
-
-    </div>
-
-    <div className="border-l-4 border-blue-500 pl-5">
-
-      <p className="text-sm font-semibold uppercase tracking-wide text-blue-600">
-        DOMINGO
-      </p>
-
-      <h3 className="mt-2 text-xl font-semibold">
-        Clase Conquistadores
-      </h3>
-
-      <p className="text-muted-foreground">
-        Preparar enseñanza.
-      </p>
-
-    </div>
-
-  </div>
+    
 
 </section>
 
