@@ -1,3 +1,5 @@
+import { FinanceDashboard } from "@/components/finances/finance-dashboard";
+
 export default function Page() {
-  return <h1>Finanzas</h1>;
+  return <FinanceDashboard />;
 }
