@@ -1,14 +1,76 @@
 "use client";
 
-import { Bell, Search } from "lucide-react";
+import { Bell, Menu, Search } from "lucide-react";
+
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+
+import Link from "next/link";
+
+const items = [
+  { title: "Dashboard", href: "/dashboard" },
+  { title: "Finanzas", href: "/finances" },
+  { title: "Calendario", href: "/calendar" },
+  { title: "Tareas", href: "/tasks" },
+  { title: "Biblia", href: "/bible" },
+  { title: "marketing", href: "/marketing" },
+  { title: "Configuración", href: "/settings" },
+];
 
 export function AppHeader() {
   return (
     <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-white/80 px-6 backdrop-blur-md">
 
-      {/* Barra de búsqueda */}
+      {/* MOBILE */}
 
-      <div className="relative w-full max-w-md">
+      <div className="flex items-center gap-3 md:hidden">
+
+        <Sheet>
+
+          <SheetTrigger asChild>
+
+            <button className="rounded-xl p-2 hover:bg-gray-100 transition">
+              <Menu size={22} />
+            </button>
+
+          </SheetTrigger>
+
+          <SheetContent side="left" className="w-72">
+
+            <div className="mb-8 text-xl font-bold">
+              🚀 MontoyaOS
+            </div>
+
+            <nav className="space-y-2">
+
+              {items.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="block rounded-xl px-4 py-3 hover:bg-gray-100 transition"
+                >
+                  {item.title}
+                </Link>
+              ))}
+
+            </nav>
+
+          </SheetContent>
+
+        </Sheet>
+
+        <span className="font-bold">
+          MontoyaOS
+        </span>
+
+      </div>
+
+      {/* DESKTOP */}
+
+      <div className="relative hidden w-full max-w-md md:block">
 
         <Search
           size={18}
@@ -25,7 +87,7 @@ export function AppHeader() {
 
       {/* Acciones */}
 
-      <div className="ml-6 flex items-center gap-3">
+      <div className="ml-auto flex items-center gap-3">
 
         <button className="rounded-xl p-2 hover:bg-gray-100 transition">
           <Bell size={20} />
