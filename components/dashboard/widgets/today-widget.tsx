@@ -1,110 +1,115 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { CalendarDays, Clock3 } from "lucide-react";
+import { Clock3 } from "lucide-react";
 
 const events = [
   {
-    time: "2:00 PM",
+    time: "2:00",
+    period: "PM",
     title: "Cita médica de Ana",
-    location: "Clínica Colsubsidio",
+    subtitle: "Clínica Colsubsidio",
     color: "bg-green-500",
   },
   {
-    time: "3:00 PM",
-    title: "Revisar campaña American Express",
-    location: "Marketing",
+    time: "3:00",
+    period: "PM",
+    title: "American Express",
+    subtitle: "Revisar campañas",
     color: "bg-cyan-500",
   },
   {
-    time: "8:00 PM",
+    time: "8:00",
+    period: "PM",
     title: "Reunión de líderes",
-    location: "Iglesia",
+    subtitle: "Iglesia",
     color: "bg-violet-500",
   },
 ];
 
 export function TodayWidget() {
   return (
-    <Card className="rounded-3xl shadow-lg border-0">
-      <CardHeader className="pb-2">
+    <section>
 
-        <div className="flex items-center justify-between">
+      <div className="mb-10">
 
-          <CardTitle className="flex items-center gap-2">
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-blue-600">
+          Hoy
+        </p>
 
-            <CalendarDays className="text-blue-600" size={22} />
+        <h2 className="mt-2 text-3xl font-bold">
+          Agenda
+        </h2>
 
-            Agenda de Hoy
+      </div>
 
-          </CardTitle>
+      <div className="space-y-10">
 
-          <Badge variant="secondary">
-            {events.length} eventos
-          </Badge>
+        {events.map((event, index) => (
 
-        </div>
+          <div
+            key={index}
+            className="grid grid-cols-[70px_24px_1fr] gap-5"
+          >
 
-      </CardHeader>
+            {/* Hora */}
 
-      <CardContent>
+            <div className="text-right">
 
-        <div className="space-y-6">
+              <h3 className="text-2xl font-bold leading-none">
+                {event.time}
+              </h3>
 
-          {events.map((event, index) => (
-
-            <div
-              key={index}
-              className="flex gap-4"
-            >
-
-              {/* Timeline */}
-
-              <div className="flex flex-col items-center">
-
-                <div
-                  className={`h-3 w-3 rounded-full ${event.color}`}
-                />
-
-                {index !== events.length - 1 && (
-                  <div className="mt-1 h-full w-px bg-zinc-200" />
-                )}
-
-              </div>
-
-              {/* Evento */}
-
-              <div className="flex-1 pb-6">
-
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-
-                  <Clock3 size={14} />
-
-                  {event.time}
-
-                </div>
-
-                <h3 className="mt-1 font-semibold">
-
-                  {event.title}
-
-                </h3>
-
-                <p className="text-sm text-muted-foreground">
-
-                  {event.location}
-
-                </p>
-
-              </div>
+              <p className="mt-1 text-xs font-semibold tracking-widest text-muted-foreground">
+                {event.period}
+              </p>
 
             </div>
 
-          ))}
+            {/* Timeline */}
 
-        </div>
+            <div className="flex flex-col items-center">
 
-      </CardContent>
+              <div
+                className={`h-4 w-4 rounded-full ${event.color} ring-4 ring-white shadow`}
+              />
 
-    </Card>
+              {index !== events.length - 1 && (
+                <div className="mt-2 h-full w-[2px] rounded-full bg-zinc-200" />
+              )}
+
+            </div>
+
+            {/* Evento */}
+
+            <div className="pb-10">
+
+              <div className="flex items-center gap-2">
+
+                <Clock3
+                  size={14}
+                  className="text-zinc-400"
+                />
+
+                <span className="text-sm text-muted-foreground">
+                  {event.time} {event.period}
+                </span>
+
+              </div>
+
+              <h3 className="mt-2 text-xl font-semibold">
+                {event.title}
+              </h3>
+
+              <p className="mt-1 text-muted-foreground">
+                {event.subtitle}
+              </p>
+
+            </div>
+
+          </div>
+
+        ))}
+
+      </div>
+
+    </section>
   );
 }
