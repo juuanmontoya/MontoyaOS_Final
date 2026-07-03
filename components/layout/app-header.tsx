@@ -1,47 +1,39 @@
 "use client";
 
 import { Bell, Search } from "lucide-react";
-import { MobileSidebar } from "./mobile-sidebar";
 
 export function AppHeader() {
   return (
-    <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-white/90 px-4 backdrop-blur-md md:px-6">
+    <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-white/80 px-6 backdrop-blur-md">
 
-      {/* Lado izquierdo */}
+      {/* Barra de búsqueda */}
 
-      <div className="flex items-center gap-3">
+      <div className="relative w-full max-w-md">
 
-        <MobileSidebar />
+        <Search
+          size={18}
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+        />
 
-        <div>
-
-          <h1 className="text-lg font-bold md:hidden">
-            MontoyaOS
-          </h1>
-
-          <h2 className="hidden text-xl font-semibold md:block">
-            Dashboard
-          </h2>
-
-        </div>
+        <input
+          type="text"
+          placeholder="Buscar..."
+          className="h-11 w-full rounded-xl border border-gray-200 bg-gray-50 pl-11 pr-4 text-sm outline-none transition-all focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+        />
 
       </div>
 
-      {/* Lado derecho */}
+      {/* Acciones */}
 
-      <div className="flex items-center gap-2 md:gap-4">
+      <div className="ml-6 flex items-center gap-3">
 
-        <button className="rounded-xl p-2 transition hover:bg-gray-100">
-          <Search size={20} />
-        </button>
-
-        <button className="rounded-xl p-2 transition hover:bg-gray-100">
+        <button className="rounded-xl p-2 hover:bg-gray-100 transition">
           <Bell size={20} />
         </button>
 
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-cyan-500 font-semibold text-white shadow-md">
+        <button className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-cyan-500 font-semibold text-white shadow">
           JM
-        </div>
+        </button>
 
       </div>
 

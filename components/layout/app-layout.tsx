@@ -14,9 +14,9 @@ export function AppLayout({ children }: Props) {
       <div className="flex flex-1 flex-col">
         <AppHeader />
 
-        <main className="flex-1 p-6">
-          {children}
-        </main>
+        <main className="flex-1 px-10 py-8 lg:px-12">
+  {children}
+</main>
       </div>
     </div>
   );

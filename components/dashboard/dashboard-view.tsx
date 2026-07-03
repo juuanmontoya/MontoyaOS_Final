@@ -2,48 +2,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FocusWidget } from "./widgets/focus-widget";
 import { TodayWidget } from "./widgets/today-widget";
 import { reminders } from "@/data/dashboard";
+import { PageHeader } from "@/components/ui/page-header";
+import { moduleTheme } from "@/lib/theme";
 
 export function DashboardView() {
   return (
     <div className="space-y-8">
 
-<section className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-
-  <div className="max-w-2xl">
-
-    <p className="text-xs font-semibold uppercase tracking-[0.35em] text-blue-600">
-      MIÉRCOLES · 2 JULIO
-    </p>
-
-    <h1 className="mt-3 text-5xl font-extrabold tracking-tight">
-      Buenos días, Juan 👋
-    </h1>
-
-    <p className="mt-4 text-xl leading-relaxed text-muted-foreground">
-      Todo lo importante.
-      <br />
-      En un solo lugar.
-    </p>
-
-    <div className="mt-6 flex flex-wrap gap-3">
-
-      <span className="rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold text-blue-700">
-        3 eventos
-      </span>
-
-      <span className="rounded-full bg-amber-100 px-4 py-2 text-sm font-semibold text-amber-700">
-        2 recordatorios
-      </span>
-
-      <span className="rounded-full bg-red-100 px-4 py-2 text-sm font-semibold text-red-700">
-        Alta prioridad
-      </span>
-
-    </div>
-
-  </div>
-
-</section>
+<PageHeader
+  eyebrow="MIÉRCOLES · 2 JULIO"
+  title="Buenos días, Juan 👋"
+  description={`Todo lo importante.
+En un solo lugar.`}
+/>
 
 <FocusWidget />
 
