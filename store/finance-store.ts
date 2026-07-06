@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export type TransactionType = "income" | "expense";
 
@@ -23,7 +24,9 @@ interface FinanceState {
   addTransaction: (transaction: Transaction) => void;
 }
 
-export const useFinanceStore = create<FinanceState>((set) => ({
+export const useFinanceStore = create<FinanceState>()(
+  persist(
+    (set) => ({
   transactions: [],
 
 balance: 0,
@@ -51,4 +54,9 @@ addTransaction: (transaction) =>
       balance: income - expenses,
     };
   }),
-}));
+    }),
+    {
+      name: "montoya-finances",
+    }
+  )
+);
