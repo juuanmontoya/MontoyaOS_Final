@@ -1,7 +1,16 @@
+"use client";
+
 import { ArrowDownRight, ArrowUpRight, Wallet } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useFinanceStore } from "@/store/finance-store";
 
 export function FinanceSummary() {
+      const balance = useFinanceStore((state) => state.balance);
+  const income = useFinanceStore((state) => state.income);
+  const expenses = useFinanceStore((state) => state.expenses);
+
+  const formatCurrency = (value: number) =>
+    value.toLocaleString("es-CO");
   return (
     <section className="grid gap-6 md:grid-cols-3">
 
@@ -14,7 +23,7 @@ export function FinanceSummary() {
             </p>
 
             <h2 className="mt-2 text-3xl font-bold">
-              $5.420.000
+              ${formatCurrency(balance)}
             </h2>
           </div>
 
@@ -34,7 +43,7 @@ export function FinanceSummary() {
             </p>
 
             <h2 className="mt-2 text-3xl font-bold text-green-600">
-              $8.000.000
+              ${formatCurrency(income)}
             </h2>
           </div>
 
@@ -54,7 +63,7 @@ export function FinanceSummary() {
             </p>
 
             <h2 className="mt-2 text-3xl font-bold text-red-600">
-              $2.580.000
+              ${formatCurrency(expenses)}
             </h2>
           </div>
 

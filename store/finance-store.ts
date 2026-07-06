@@ -14,14 +14,41 @@ export interface Transaction {
 interface FinanceState {
   transactions: Transaction[];
 
+  balance: number;
+
+  income: number;
+
+  expenses: number;
+
   addTransaction: (transaction: Transaction) => void;
 }
 
 export const useFinanceStore = create<FinanceState>((set) => ({
   transactions: [],
 
-  addTransaction: (transaction) =>
-    set((state) => ({
-      transactions: [...state.transactions, transaction],
-    })),
+balance: 0,
+
+income: 0,
+
+expenses: 0,
+
+addTransaction: (transaction) =>
+  set((state) => {
+    const transactions = [...state.transactions, transaction];
+
+    const income = transactions
+      .filter((t) => t.type === "income")
+      .reduce((total, t) => total + t.amount, 0);
+
+    const expenses = transactions
+      .filter((t) => t.type === "expense")
+      .reduce((total, t) => total + t.amount, 0);
+
+    return {
+      transactions,
+      income,
+      expenses,
+      balance: income - expenses,
+    };
+  }),
 }));
