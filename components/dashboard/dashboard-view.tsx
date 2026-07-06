@@ -6,6 +6,7 @@ import { reminders } from "@/data/dashboard";
 import { PageHeader } from "@/components/ui/page-header";
 import { moduleTheme } from "@/lib/theme";
 import { useFinanceStore } from "@/store/finance-store";
+import { DailyBrief } from "@/components/ui/dashboard/daily-brief";
 
 export function DashboardView() {
     const balance = useFinanceStore((state) => state.balance);
@@ -15,12 +16,7 @@ export function DashboardView() {
   return (
     <div className="space-y-8">
 
-<PageHeader
-  eyebrow="MIÉRCOLES · 2 JULIO"
-  title="Buenos días, Juan 👋"
-  description={`Todo lo importante.
-En un solo lugar.`}
-/>
+<DailyBrief />
 
 <FocusWidget />
 
