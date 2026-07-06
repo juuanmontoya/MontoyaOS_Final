@@ -7,9 +7,10 @@ import { PageHeader } from "@/components/ui/page-header";
 import { moduleTheme } from "@/lib/theme";
 import { useFinanceStore } from "@/store/finance-store";
 import { DailyBrief } from "@/components/ui/dashboard/daily-brief";
+import { useFinanceSummary } from "@/core/hooks/use-finance-summary";
 
 export function DashboardView() {
-    const balance = useFinanceStore((state) => state.balance);
+    const { balance } = useFinanceSummary();
 
   const formatCurrency = (value: number) =>
     `$${value.toLocaleString("es-CO")}`;

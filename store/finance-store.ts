@@ -1,62 +1,46 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import {
+  addTransaction,
+  getTransactions,
+} from "@/core/services/finance-service";
 
 export type TransactionType = "income" | "expense";
 
 export interface Transaction {
   id: string;
-  type: TransactionType;
-  category: string;
   description: string;
+  category: string;
+  type: TransactionType;
   amount: number;
-  date: string;
+  created_at: string;
 }
 
 interface FinanceState {
   transactions: Transaction[];
 
-  balance: number;
+  loadTransactions: () => Promise<void>;
 
-  income: number;
-
-  expenses: number;
-
-  addTransaction: (transaction: Transaction) => void;
+  addTransaction: (
+    transaction: Omit<Transaction, "id" | "created_at">
+  ) => Promise<void>;
 }
 
-export const useFinanceStore = create<FinanceState>()(
-  persist(
-    (set) => ({
+export const useFinanceStore = create<FinanceState>((set) => ({
   transactions: [],
 
-balance: 0,
+  loadTransactions: async () => {
+    const transactions = await getTransactions();
 
-income: 0,
-
-expenses: 0,
-
-addTransaction: (transaction) =>
-  set((state) => {
-    const transactions = [...state.transactions, transaction];
-
-    const income = transactions
-      .filter((t) => t.type === "income")
-      .reduce((total, t) => total + t.amount, 0);
-
-    const expenses = transactions
-      .filter((t) => t.type === "expense")
-      .reduce((total, t) => total + t.amount, 0);
-
-    return {
+    set({
       transactions,
-      income,
-      expenses,
-      balance: income - expenses,
-    };
-  }),
-    }),
-    {
-      name: "montoya-finances",
-    }
-  )
-);
+    });
+  },
+
+  addTransaction: async (transaction) => {
+    const newTransaction = await addTransaction(transaction);
+
+    set((state) => ({
+      transactions: [newTransaction, ...state.transactions],
+    }));
+  },
+}));

@@ -10,19 +10,22 @@ export function TransactionForm() {
   const [amount, setAmount] = useState("");
   const [type, setType] = useState<"income" | "expense">("expense");
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault();
 
-    if (!description || !amount) return;
+  if (!description || !amount) return;
 
-    addTransaction({
-      id: crypto.randomUUID(),
-      description,
-      amount: Number(amount),
-      type,
-      category: "General",
-      date: new Date().toISOString(),
-    });
+  await addTransaction({
+    description,
+    amount: Number(amount),
+    type,
+    category: "General",
+  });
+
+  setDescription("");
+  setAmount("");
+  setType("expense");
+}
 
     setDescription("");
     setAmount("");
