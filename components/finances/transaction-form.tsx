@@ -4,28 +4,25 @@ import { useState } from "react";
 import { useFinanceStore } from "@/store/finance-store";
 
 export function TransactionForm() {
-  const addTransaction = useFinanceStore((state) => state.addTransaction);
+  const createTransaction = useFinanceStore(
+    (state) => state.createTransaction
+  );
 
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [type, setType] = useState<"income" | "expense">("expense");
 
-async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
 
-  if (!description || !amount) return;
+    if (!description || !amount) return;
 
-  await addTransaction({
-    description,
-    amount: Number(amount),
-    type,
-    category: "General",
-  });
-
-  setDescription("");
-  setAmount("");
-  setType("expense");
-}
+    await createTransaction({
+      description,
+      amount: Number(amount),
+      type,
+      category: "General",
+    });
 
     setDescription("");
     setAmount("");

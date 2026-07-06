@@ -3,9 +3,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FocusWidget } from "@/components/ui/dashboard/focus-widget";
 import { TodayWidget } from "@/components/ui/dashboard/today-widget";
 import { reminders } from "@/data/dashboard";
-import { PageHeader } from "@/components/ui/page-header";
-import { moduleTheme } from "@/lib/theme";
-import { useFinanceStore } from "@/store/finance-store";
 import { DailyBrief } from "@/components/ui/dashboard/daily-brief";
 import { useFinanceSummary } from "@/core/hooks/use-finance-summary";
 

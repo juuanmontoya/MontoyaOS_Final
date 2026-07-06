@@ -8,9 +8,26 @@ export async function getTransactions() {
     .select("*")
     .order("created_at", { ascending: false });
 
-  if (error) throw error;
+  if (error) {
+    console.group("❌ SUPABASE ERROR - GET");
+    console.log(error);
+    console.groupEnd();
 
-  return data;
+    throw new Error(
+      JSON.stringify(
+        {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code,
+        },
+        null,
+        2
+      )
+    );
+  }
+
+  return data ?? [];
 }
 
 export async function addTransaction(transaction: {
@@ -25,7 +42,24 @@ export async function addTransaction(transaction: {
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) {
+    console.group("❌ SUPABASE ERROR - INSERT");
+    console.log(error);
+    console.groupEnd();
+
+    throw new Error(
+      JSON.stringify(
+        {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code,
+        },
+        null,
+        2
+      )
+    );
+  }
 
   return data;
 }
