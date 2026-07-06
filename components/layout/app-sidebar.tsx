@@ -1,53 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Home,
-  Wallet,
-  Calendar,
-  CheckSquare,
-  BookOpen,
-  Megaphone,
-  Settings,
-} from "lucide-react";
-
-const items = [
-  {
-    title: "Dashboard",
-    href: "/dashboard",
-    icon: Home,
-  },
-  {
-    title: "Finanzas",
-    href: "/finances",
-    icon: Wallet,
-  },
-  {
-    title: "Calendario",
-    href: "/calendar",
-    icon: Calendar,
-  },
-  {
-    title: "Tareas",
-    href: "/tasks",
-    icon: CheckSquare,
-  },
-  {
-    title: "Biblia",
-    href: "/bible",
-    icon: BookOpen,
-  },
-  {
-    title: "Marketing",
-    href: "/marketing",
-    icon: Megaphone,
-  },
-  {
-    title: "Configuración",
-    href: "/settings",
-    icon: Settings,
-  },
-];
+import { navigationItems } from "@/data/navigation";
 
 export function AppSidebar() {
   return (
@@ -57,7 +11,7 @@ export function AppSidebar() {
       </div>
 
       <nav className="flex-1 p-4 space-y-2">
-        {items.map((item) => {
+        {navigationItems.map((item) => {
           const Icon = item.icon;
 
           return (

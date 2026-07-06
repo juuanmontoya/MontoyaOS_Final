@@ -1,7 +1,7 @@
 "use client";
 
 import { Bell, Menu, Search } from "lucide-react";
-
+import { navigationItems } from "@/data/navigation";
 import {
   Sheet,
   SheetContent,
@@ -9,16 +9,6 @@ import {
 } from "@/components/ui/sheet";
 
 import Link from "next/link";
-
-const items = [
-  { title: "Dashboard", href: "/dashboard" },
-  { title: "Finanzas", href: "/finances" },
-  { title: "Calendario", href: "/calendar" },
-  { title: "Tareas", href: "/tasks" },
-  { title: "Biblia", href: "/bible" },
-  { title: "marketing", href: "/marketing" },
-  { title: "Configuración", href: "/settings" },
-];
 
 export function AppHeader() {
   return (
@@ -46,14 +36,15 @@ export function AppHeader() {
 
             <nav className="space-y-2">
 
-              {items.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="block rounded-xl px-4 py-3 hover:bg-gray-100 transition"
-                >
-                  {item.title}
-                </Link>
+              {navigationItems.map((item) => (
+               <Link
+  key={item.href}
+  href={item.href}
+  className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-gray-100 transition"
+>
+  <item.icon size={18} />
+  <span>{item.title}</span>
+</Link>
               ))}
 
             </nav>
