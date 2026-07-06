@@ -1,11 +1,17 @@
+"use client";
 import { Card, CardContent } from "@/components/ui/card";
-import { FocusWidget } from "./widgets/focus-widget";
-import { TodayWidget } from "./widgets/today-widget";
+import { FocusWidget } from "@/components/ui/dashboard/focus-widget";
+import { TodayWidget } from "@/components/ui/dashboard/today-widget";
 import { reminders } from "@/data/dashboard";
 import { PageHeader } from "@/components/ui/page-header";
 import { moduleTheme } from "@/lib/theme";
+import { useFinanceStore } from "@/store/finance-store";
 
 export function DashboardView() {
+    const balance = useFinanceStore((state) => state.balance);
+
+  const formatCurrency = (value: number) =>
+    `$${value.toLocaleString("es-CO")}`;
   return (
     <div className="space-y-8">
 
@@ -73,13 +79,17 @@ En un solo lugar.`}
 
           <CardContent className="p-8">
 
-            <h3 className="text-xl font-bold">
-              💰 Finanzas
-            </h3>
+          <h3 className="text-xl font-bold">
+  💰 Balance General
+</h3>
 
-            <p className="mt-3 text-muted-foreground">
-              Próximamente...
-            </p>
+<h2 className="mt-4 text-4xl font-bold">
+  {formatCurrency(balance)}
+</h2>
+
+<p className="mt-3 text-sm text-muted-foreground">
+  Sincronizado automáticamente con el módulo de Finanzas.
+</p>
 
           </CardContent>
 
