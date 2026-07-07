@@ -38,7 +38,13 @@ export async function addTransaction(transaction: {
 }) {
   const { data, error } = await supabase
     .from(TABLE)
-    .insert(transaction)
+    .insert({
+      description: transaction.description,
+      amount: transaction.amount,
+      type: transaction.type,
+      category: null,
+      category_id: transaction.category,
+    })
     .select()
     .single();
 

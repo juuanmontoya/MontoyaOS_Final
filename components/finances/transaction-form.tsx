@@ -1,32 +1,74 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+
 import { useFinanceStore } from "@/store/finance-store";
+import { CategorySelector } from "@/components/finances/category-selector";
 
 export function TransactionForm() {
   const createTransaction = useFinanceStore(
     (state) => state.createTransaction
   );
 
+  const categories = useFinanceStore(
+    (state) => state.categories
+  );
+
+  const loadCategories = useFinanceStore(
+    (state) => state.loadCategories
+  );
+
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [type, setType] = useState<"income" | "expense">("expense");
+  const [category, setCategory] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    loadCategories();
+  }, [loadCategories]);
+
+  const filteredCategories = useMemo(() => {
+    return categories.filter((category) => category.type === type);
+  }, [categories, type]);
+
+  useEffect(() => {
+    if (filteredCategories.length > 0) {
+      setCategory(filteredCategories[0].id);
+    }
+  }, [filteredCategories]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!description || !amount) return;
+    if (!description || !amount || !category) {
+      toast.warning("Completa todos los campos.");
+      return;
+    }
 
-    await createTransaction({
-      description,
-      amount: Number(amount),
-      type,
-      category: "General",
-    });
+    try {
+      setIsSaving(true);
 
-    setDescription("");
-    setAmount("");
-    setType("expense");
+      await createTransaction({
+        description,
+        amount: Number(amount),
+        type,
+        category,
+      });
+
+      toast.success(
+        `${type === "income" ? "Ingreso" : "Gasto"} registrado correctamente`
+      );
+
+      setDescription("");
+      setAmount("");
+      setType("expense");
+    } catch {
+      toast.error("No fue posible guardar el movimiento.");
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
@@ -41,6 +83,7 @@ export function TransactionForm() {
       <div className="flex gap-3">
         <button
           type="button"
+          disabled={isSaving}
           onClick={() => setType("expense")}
           className={`flex-1 rounded-xl p-3 font-semibold transition ${
             type === "expense"
@@ -53,6 +96,7 @@ export function TransactionForm() {
 
         <button
           type="button"
+          disabled={isSaving}
           onClick={() => setType("income")}
           className={`flex-1 rounded-xl p-3 font-semibold transition ${
             type === "income"
@@ -64,11 +108,18 @@ export function TransactionForm() {
         </button>
       </div>
 
+      <CategorySelector
+        categories={filteredCategories}
+        value={category}
+        onChange={setCategory}
+      />
+
       <input
         className="w-full rounded-xl border p-3"
         placeholder="Descripción"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
+        disabled={isSaving}
       />
 
       <input
@@ -77,13 +128,15 @@ export function TransactionForm() {
         type="number"
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
+        disabled={isSaving}
       />
 
       <button
         type="submit"
-        className="w-full rounded-xl bg-blue-600 p-3 font-semibold text-white hover:bg-blue-700 transition"
+        disabled={isSaving}
+        className="w-full rounded-xl bg-blue-600 p-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        Guardar movimiento
+        {isSaving ? "Guardando..." : "Guardar movimiento"}
       </button>
     </form>
   );

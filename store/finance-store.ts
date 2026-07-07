@@ -1,8 +1,12 @@
 import { create } from "zustand";
+
+import type { Category } from "@/types/category";
+
+import { categoryService } from "@/services/category-service";
 import {
   getTransactions,
   addTransaction,
-} from "@/core/services/finance-service";
+} from "@/services/finance-service";
 
 export type TransactionType = "income" | "expense";
 
@@ -17,9 +21,12 @@ export interface Transaction {
 
 interface FinanceStore {
   transactions: Transaction[];
+  categories: Category[];
+
   isLoading: boolean;
 
   loadTransactions: () => Promise<void>;
+  loadCategories: () => Promise<void>;
 
   createTransaction: (
     transaction: Omit<Transaction, "id" | "created_at">
@@ -28,6 +35,7 @@ interface FinanceStore {
 
 export const useFinanceStore = create<FinanceStore>((set) => ({
   transactions: [],
+  categories: [],
 
   isLoading: false,
 
@@ -54,6 +62,19 @@ export const useFinanceStore = create<FinanceStore>((set) => ({
         isLoading: false,
       });
 
+      throw error;
+    }
+  },
+
+  loadCategories: async () => {
+    try {
+      const categories = await categoryService.getCategories();
+
+      set({
+        categories,
+      });
+    } catch (error) {
+      console.error("❌ Error cargando categorías:", error);
       throw error;
     }
   },
