@@ -42,7 +42,6 @@ export async function addTransaction(transaction: {
       description: transaction.description,
       amount: transaction.amount,
       type: transaction.type,
-      category: null,
       category_id: transaction.category,
     })
     .select()
