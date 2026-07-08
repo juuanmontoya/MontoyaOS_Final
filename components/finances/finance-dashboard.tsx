@@ -6,7 +6,10 @@ import { useFinanceStore } from "@/store/finance-store";
 
 import { FinanceSummary } from "./finance-summary";
 import { FinanceKPIs } from "./finance-kpis";
+import { FinanceInsights } from "./finance-insights";
+import { FinanceHealthCard } from "./finance-health-card";
 import { ExpensesByCategoryChart } from "./expenses-by-category-chart";
+import { MonthlyTrendChart } from "./monthly-trend-chart";
 import { TransactionForm } from "./transaction-form";
 import { TransactionList } from "./transaction-list";
 
@@ -40,6 +43,16 @@ export function FinanceDashboard() {
       <section className="grid gap-8 lg:grid-cols-2">
 
         <ExpensesByCategoryChart />
+
+        <MonthlyTrendChart />
+
+      </section>
+
+      <section className="grid gap-8 lg:grid-cols-[1fr_420px]">
+
+        <FinanceInsights />
+
+        <FinanceHealthCard />
 
       </section>
 

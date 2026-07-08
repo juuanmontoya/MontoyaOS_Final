@@ -1,11 +1,17 @@
 "use client";
 
 import { useMemo } from "react";
+
 import { useFinanceStore } from "@/store/finance-store";
+import { calculateFinanceHealth } from "@/core/finance-engine";
 
 export function useFinanceAnalytics() {
   const transactions = useFinanceStore(
     (state) => state.transactions
+  );
+
+  const categories = useFinanceStore(
+    (state) => state.categories
   );
 
   return useMemo(() => {
@@ -96,6 +102,11 @@ export function useFinanceAnalytics() {
         ? expenses / expenseTransactions.length
         : 0;
 
+    const financeHealth = calculateFinanceHealth(
+      transactions,
+      categories
+    );
+
     return {
       balance,
 
@@ -123,6 +134,8 @@ export function useFinanceAnalytics() {
         transactions.slice(0, 5),
 
       totalExpensesAmount: expenses,
+
+      financeHealth,
     };
-  }, [transactions]);
+  }, [transactions, categories]);
 }
