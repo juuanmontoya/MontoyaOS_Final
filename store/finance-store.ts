@@ -17,6 +17,8 @@ export interface Transaction {
 
   category_id: string;
 
+  category?: Category;
+
   created_at: string;
 }
 
@@ -30,12 +32,12 @@ interface FinanceStore {
   loadCategories: () => Promise<void>;
 
   createTransaction: (
-    transaction: Omit<Transaction, "id" | "created_at">
+    transaction: Omit<Transaction, "id" | "category" | "created_at">
   ) => Promise<void>;
 
   editTransaction: (
     id: string,
-    transaction: Omit<Transaction, "id" | "created_at">
+    transaction: Omit<Transaction, "id" | "category" | "created_at">
   ) => Promise<void>;
 }
 
