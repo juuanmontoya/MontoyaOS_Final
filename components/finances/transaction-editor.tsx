@@ -16,6 +16,8 @@ interface Props {
 
   submitLabel: string;
 
+  resetAfterSubmit?: boolean;
+
   onSubmit: (data: {
     description: string;
     amount: number;
@@ -29,6 +31,7 @@ interface Props {
 export function TransactionEditor({
   initialValues,
   submitLabel,
+  resetAfterSubmit = false,
   onSubmit,
   onSuccess,
 }: Props) {
@@ -89,6 +92,20 @@ export function TransactionEditor({
       });
 
       toast.success("Movimiento guardado correctamente.");
+
+      if (resetAfterSubmit) {
+        setDescription("");
+        setAmount("");
+        setType("expense");
+
+        const expenseCategories = categories.filter(
+          (c) => c.type === "expense"
+        );
+
+        if (expenseCategories.length > 0) {
+          setCategoryId(expenseCategories[0].id);
+        }
+      }
 
       onSuccess?.();
     } catch {

@@ -1,11 +1,15 @@
 "use client";
 
-import { useFinanceStore } from "@/store/finance-store";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+
+import { useFinanceStore } from "@/store/finance-store";
 import { EditTransactionDialog } from "./edit-transaction-dialog";
+import { formatRelativeDate } from "@/core/utils/format-relative-date";
 
 export function TransactionList() {
-  const transactions = useFinanceStore((state) => state.transactions);
+  const transactions = useFinanceStore(
+    (state) => state.transactions
+  );
 
   if (transactions.length === 0) {
     return (
@@ -16,56 +20,90 @@ export function TransactionList() {
   }
 
   return (
-    <div className="space-y-3">
-      {transactions.map((transaction: any) => (
-        <div
-          key={transaction.id}
-          className="rounded-2xl border bg-white p-5 shadow-sm"
-        >
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-4">
-              <div
-                className={`flex h-12 w-12 items-center justify-center rounded-xl ${
-                  transaction.type === "income"
-                    ? "bg-green-100"
-                    : "bg-red-100"
-                }`}
-              >
-                {transaction.type === "income" ? (
-                  <ArrowUpRight className="text-green-600" />
-                ) : (
-                  <ArrowDownRight className="text-red-600" />
-                )}
+    <div className="space-y-4">
+      {transactions.map((transaction) => {
+        const category = transaction.category;
+
+        return (
+          <div
+            key={transaction.id}
+            className="rounded-3xl border bg-white p-5 shadow-sm transition-all hover:shadow-md"
+          >
+            <div className="flex items-start justify-between">
+
+              <div className="flex items-center gap-4">
+
+                <div
+                  className="flex h-14 w-14 items-center justify-center rounded-2xl"
+                  style={{
+                    backgroundColor:
+                      category?.color ?? "#F3F4F6",
+                  }}
+                >
+                  <span className="text-2xl">
+                    {category?.icon ??
+                      (transaction.type === "income"
+                        ? "💰"
+                        : "💸")}
+                  </span>
+                </div>
+
+                <div>
+
+                  <h3 className="text-lg font-semibold">
+                    {transaction.description}
+                  </h3>
+
+                  <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+
+                    <span>
+                      {category?.name ?? "Sin categoría"}
+                    </span>
+
+                    <span>•</span>
+
+                    <span>
+                      {formatRelativeDate(
+                        transaction.created_at
+                      )}
+                    </span>
+
+                  </div>
+
+                </div>
+
               </div>
 
-              <div>
-                <h3 className="font-semibold">
-                  {transaction.description}
-                </h3>
+              <div className="text-right">
 
-                <p className="text-sm text-muted-foreground">
-                  {transaction.category?.name}
+                <p
+                  className={`text-xl font-bold ${
+                    transaction.type === "income"
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {transaction.type === "income"
+                    ? "+"
+                    : "-"}
+                  $
+                  {transaction.amount.toLocaleString(
+                    "es-CO"
+                  )}
                 </p>
+
+                <div className="mt-3 flex justify-end">
+                  <EditTransactionDialog
+                    transaction={transaction}
+                  />
+                </div>
+
               </div>
-            </div>
 
-            <div className="text-right space-y-2">
-              <p
-                className={`text-lg font-bold ${
-                  transaction.type === "income"
-                    ? "text-green-600"
-                    : "text-red-600"
-                }`}
-              >
-                {transaction.type === "income" ? "+" : "-"}$
-                {transaction.amount.toLocaleString("es-CO")}
-              </p>
-
-              <EditTransactionDialog transaction={transaction} />
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

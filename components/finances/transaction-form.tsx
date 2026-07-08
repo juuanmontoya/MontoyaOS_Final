@@ -14,10 +14,11 @@ export function TransactionForm() {
         Registrar movimiento
       </h2>
 
-      <TransactionEditor
-        submitLabel="Guardar movimiento"
-        onSubmit={createTransaction}
-      />
+   <TransactionEditor
+  submitLabel="Guardar movimiento"
+  resetAfterSubmit
+  onSubmit={createTransaction}
+/>
     </div>
   );
 }
