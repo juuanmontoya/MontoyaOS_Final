@@ -83,13 +83,14 @@ export function FinanceKPIs() {
               Categoría #1
             </p>
 
-            <h3 className="font-bold">
-              {topCategory?.[0] ?? "-"}
+            <h3 className="font-bold flex items-center gap-2">
+              <span>{topCategory?.icon}</span>
+              <span>{topCategory?.name ?? "-"}</span>
             </h3>
 
             <p className="text-sm text-muted-foreground">
               {topCategory
-                ? `$${formatCurrency(topCategory[1])}`
+                ? `$${formatCurrency(topCategory.value)}`
                 : "-"}
             </p>
 

@@ -10,20 +10,20 @@ export function useFinanceAnalytics() {
 
   return useMemo(() => {
     const incomeTransactions = transactions.filter(
-      (t) => t.type === "income"
+      (transaction) => transaction.type === "income"
     );
 
     const expenseTransactions = transactions.filter(
-      (t) => t.type === "expense"
+      (transaction) => transaction.type === "expense"
     );
 
     const income = incomeTransactions.reduce(
-      (sum, t) => sum + t.amount,
+      (sum, transaction) => sum + transaction.amount,
       0
     );
 
     const expenses = expenseTransactions.reduce(
-      (sum, t) => sum + t.amount,
+      (sum, transaction) => sum + transaction.amount,
       0
     );
 
@@ -31,27 +31,65 @@ export function useFinanceAnalytics() {
 
     const biggestExpense =
       expenseTransactions.length > 0
-        ? expenseTransactions.reduce((prev, current) =>
-            current.amount > prev.amount ? current : prev
+        ? expenseTransactions.reduce((previous, current) =>
+            current.amount > previous.amount
+              ? current
+              : previous
           )
         : null;
 
-    const expensesByCategory = expenseTransactions.reduce(
-      (acc: Record<string, number>, transaction: any) => {
-        const categoryName =
-          transaction.category?.name ?? "Sin categoría";
+    const categoryMap = new Map<
+      string,
+      {
+        id: string;
+        name: string;
+        icon: string;
+        color: string;
+        value: number;
+      }
+    >();
 
-        acc[categoryName] =
-          (acc[categoryName] ?? 0) + transaction.amount;
+    expenseTransactions.forEach((transaction: any) => {
+      const category = transaction.category;
 
-        return acc;
-      },
-      {}
-    );
+      if (!category) return;
+
+      const current = categoryMap.get(category.id);
+
+      if (current) {
+        current.value += transaction.amount;
+      } else {
+        categoryMap.set(category.id, {
+          id: category.id,
+          name: category.name,
+          icon: category.icon,
+          color: category.color,
+          value: transaction.amount,
+        });
+      }
+    });
+
+    const expensesByCategory = Array.from(
+      categoryMap.values()
+    )
+      .sort((a, b) => b.value - a.value)
+      .map((category) => ({
+        ...category,
+        percentage:
+          expenses === 0
+            ? 0
+            : Number(
+                (
+                  (category.value / expenses) *
+                  100
+                ).toFixed(1)
+              ),
+      }));
 
     const topCategory =
-      Object.entries(expensesByCategory)
-        .sort((a, b) => b[1] - a[1])[0] ?? null;
+      expensesByCategory.length > 0
+        ? expensesByCategory[0]
+        : null;
 
     const averageExpense =
       expenseTransactions.length > 0
@@ -60,14 +98,18 @@ export function useFinanceAnalytics() {
 
     return {
       balance,
+
       income,
+
       expenses,
 
       totalTransactions: transactions.length,
 
-      incomeTransactions: incomeTransactions.length,
+      incomeTransactions:
+        incomeTransactions.length,
 
-      expenseTransactions: expenseTransactions.length,
+      expenseTransactions:
+        expenseTransactions.length,
 
       biggestExpense,
 
@@ -77,7 +119,10 @@ export function useFinanceAnalytics() {
 
       expensesByCategory,
 
-      latestTransactions: transactions.slice(0, 5),
+      latestTransactions:
+        transactions.slice(0, 5),
+
+      totalExpensesAmount: expenses,
     };
   }, [transactions]);
 }
