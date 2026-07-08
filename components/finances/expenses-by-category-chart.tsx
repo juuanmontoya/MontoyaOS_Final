@@ -31,7 +31,7 @@ export function ExpensesByCategoryChart() {
 
           {/* ---------------- DONA ---------------- */}
 
-          <div className="relative flex h-72 flex-1 items-center justify-center">
+          <div className="relative flex h-[260px] w-full items-center justify-center md:h-[320px] md:flex-1">
 
             <ResponsiveContainer
               width="100%"
@@ -40,13 +40,13 @@ export function ExpensesByCategoryChart() {
               <PieChart>
 
                 <Pie
-                  data={expensesByCategory}
-                  dataKey="value"
-                  nameKey="name"
-                  innerRadius={60}
-                  outerRadius={90}
-                  paddingAngle={3}
-                >
+  data={expensesByCategory}
+  dataKey="value"
+  nameKey="name"
+  innerRadius="58%"
+  outerRadius="78%"
+  paddingAngle={3}
+>
                   {expensesByCategory.map((category) => (
                     <Cell
                       key={category.id}
@@ -65,7 +65,7 @@ export function ExpensesByCategoryChart() {
               </PieChart>
             </ResponsiveContainer>
 
-            <div className="absolute flex flex-col items-center">
+            <div className="pointer-events-none absolute flex flex-col items-center text-center">
 
               <span className="text-xl font-bold">
                 $
