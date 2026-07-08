@@ -12,9 +12,9 @@ export function AnalyticsCard({
   children,
 }: AnalyticsCardProps) {
   return (
-    <section className="flex h-[430px] flex-col rounded-3xl border bg-white p-6 shadow-sm">
+    <section className="rounded-3xl border bg-white p-6 shadow-sm">
 
-      <div className="mb-5">
+      <div className="mb-6">
 
         <h2 className="text-xl font-bold">
           {title}
@@ -28,11 +28,7 @@ export function AnalyticsCard({
 
       </div>
 
-      <div className="flex-1 overflow-hidden">
-
-        {children}
-
-      </div>
+      {children}
 
     </section>
   );

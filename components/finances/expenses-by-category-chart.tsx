@@ -27,11 +27,11 @@ export function ExpensesByCategoryChart() {
           No hay gastos registrados.
         </div>
       ) : (
-        <div className="flex h-full flex-col gap-6 lg:flex-row">
+        <div className="flex flex-col gap-8 xl:flex-row xl:items-center">
 
           {/* ---------------- DONA ---------------- */}
 
-          <div className="relative flex h-[260px] w-full items-center justify-center md:h-[320px] md:flex-1">
+          <div className="relative flex h-[280px] w-full items-center justify-center xl:h-[340px] xl:flex-1">
 
             <ResponsiveContainer
               width="100%"
@@ -84,10 +84,13 @@ export function ExpensesByCategoryChart() {
 
           {/* ---------------- LISTA ---------------- */}
 
-          <div className="flex flex-1 flex-col justify-center gap-5 overflow-y-auto pr-2">
+          <div className="flex flex-col gap-6 xl:flex-1">
 
             {expensesByCategory.map((category) => (
-              <div key={category.id}>
+              <div
+  key={category.id}
+  className="border-b border-gray-100 pb-5 last:border-b-0"
+>
 
                 <div className="mb-2 flex items-center justify-between">
 
