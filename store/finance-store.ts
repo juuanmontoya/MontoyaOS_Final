@@ -1,11 +1,10 @@
 import { create } from "zustand";
-
 import type { Category } from "@/types/category";
-
 import { categoryService } from "@/services/category-service";
 import {
   getTransactions,
   addTransaction,
+  updateTransaction,
 } from "@/services/finance-service";
 
 export type TransactionType = "income" | "expense";
@@ -13,9 +12,11 @@ export type TransactionType = "income" | "expense";
 export interface Transaction {
   id: string;
   description: string;
-  category: string;
-  type: TransactionType;
   amount: number;
+  type: TransactionType;
+
+  category_id: string;
+
   created_at: string;
 }
 
@@ -31,12 +32,16 @@ interface FinanceStore {
   createTransaction: (
     transaction: Omit<Transaction, "id" | "created_at">
   ) => Promise<void>;
+
+  editTransaction: (
+    id: string,
+    transaction: Omit<Transaction, "id" | "created_at">
+  ) => Promise<void>;
 }
 
 export const useFinanceStore = create<FinanceStore>((set) => ({
   transactions: [],
   categories: [],
-
   isLoading: false,
 
   loadTransactions: async () => {
@@ -49,14 +54,8 @@ export const useFinanceStore = create<FinanceStore>((set) => ({
         transactions,
         isLoading: false,
       });
-    } catch (error: any) {
-      console.group("❌ ERROR cargando transacciones");
-      console.log(error);
-      console.log("message:", error?.message);
-      console.log("details:", error?.details);
-      console.log("hint:", error?.hint);
-      console.log("code:", error?.code);
-      console.groupEnd();
+    } catch (error) {
+      console.error(error);
 
       set({
         isLoading: false,
@@ -68,34 +67,37 @@ export const useFinanceStore = create<FinanceStore>((set) => ({
 
   loadCategories: async () => {
     try {
-      const categories = await categoryService.getCategories();
+      const categories =
+        await categoryService.getCategories();
 
       set({
         categories,
       });
     } catch (error) {
-      console.error("❌ Error cargando categorías:", error);
-      throw error;
+      console.error(error);
     }
   },
 
   createTransaction: async (transaction) => {
-    try {
-      const newTransaction = await addTransaction(transaction);
+    const newTransaction =
+      await addTransaction(transaction);
 
-      set((state) => ({
-        transactions: [newTransaction, ...state.transactions],
-      }));
-    } catch (error: any) {
-      console.group("❌ ERROR creando transacción");
-      console.log(error);
-      console.log("message:", error?.message);
-      console.log("details:", error?.details);
-      console.log("hint:", error?.hint);
-      console.log("code:", error?.code);
-      console.groupEnd();
+    set((state) => ({
+      transactions: [
+        newTransaction,
+        ...state.transactions,
+      ],
+    }));
+  },
 
-      throw error;
-    }
+  editTransaction: async (id, transaction) => {
+    const updatedTransaction =
+      await updateTransaction(id, transaction);
+
+    set((state) => ({
+      transactions: state.transactions.map((item) =>
+        item.id === id ? updatedTransaction : item
+      ),
+    }));
   },
 }));

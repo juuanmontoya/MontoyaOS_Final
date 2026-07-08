@@ -5,7 +5,16 @@ const TABLE = "transactions";
 export async function getTransactions() {
   const { data, error } = await supabase
     .from(TABLE)
-    .select("*")
+    .select(`
+      *,
+      category:categories (
+        id,
+        name,
+        icon,
+        color,
+        type
+      )
+    `)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -13,18 +22,7 @@ export async function getTransactions() {
     console.log(error);
     console.groupEnd();
 
-    throw new Error(
-      JSON.stringify(
-        {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code,
-        },
-        null,
-        2
-      )
-    );
+    throw error;
   }
 
   return data ?? [];
@@ -32,19 +30,23 @@ export async function getTransactions() {
 
 export async function addTransaction(transaction: {
   description: string;
-  category: string;
+  category_id: string;
   type: "income" | "expense";
   amount: number;
 }) {
   const { data, error } = await supabase
     .from(TABLE)
-    .insert({
-      description: transaction.description,
-      amount: transaction.amount,
-      type: transaction.type,
-      category_id: transaction.category,
-    })
-    .select()
+    .insert(transaction)
+    .select(`
+      *,
+      category:categories (
+        id,
+        name,
+        icon,
+        color,
+        type
+      )
+    `)
     .single();
 
   if (error) {
@@ -52,18 +54,43 @@ export async function addTransaction(transaction: {
     console.log(error);
     console.groupEnd();
 
-    throw new Error(
-      JSON.stringify(
-        {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code,
-        },
-        null,
-        2
+    throw error;
+  }
+
+  return data;
+}
+
+export async function updateTransaction(
+  id: string,
+  transaction: {
+    description: string;
+    category_id: string;
+    type: "income" | "expense";
+    amount: number;
+  }
+) {
+  const { data, error } = await supabase
+    .from(TABLE)
+    .update(transaction)
+    .eq("id", id)
+    .select(`
+      *,
+      category:categories (
+        id,
+        name,
+        icon,
+        color,
+        type
       )
-    );
+    `)
+    .single();
+
+  if (error) {
+    console.group("❌ SUPABASE ERROR - UPDATE");
+    console.log(error);
+    console.groupEnd();
+
+    throw error;
   }
 
   return data;
