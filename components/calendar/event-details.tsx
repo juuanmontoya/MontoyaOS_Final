@@ -73,29 +73,42 @@ export function EventDetails() {
     return (
       <SectionCard>
         <EventEditor
-          initialValues={{
-            title: selectedEvent.title,
-            description:
-              selectedEvent.description ?? "",
-            start: selectedEvent.start,
-            end: selectedEvent.end,
-            all_day:
-              selectedEvent.all_day,
-            location:
-              selectedEvent.location ?? "",
-            color:
-              selectedEvent.color,
-          }}
-          submitLabel="Actualizar evento"
-          onSubmit={async (data) => {
-            await editEvent(
-              selectedEvent.id,
-              data
-            );
+  initialValues={{
+    title: selectedEvent.title,
+    description:
+      selectedEvent.description ?? "",
+    start: selectedEvent.start,
+    end: selectedEvent.end,
+    all_day:
+      selectedEvent.all_day,
+    location:
+      selectedEvent.location ?? "",
+    color:
+      selectedEvent.color,
+  }}
+  submitLabel="Actualizar evento"
+  onSubmit={async (data) => {
+    await editEvent(
+      selectedEvent.id,
+      {
+        ...data,
+        source:
+          selectedEvent.source,
+        source_id:
+          selectedEvent.source_id,
+        reminder:
+          selectedEvent.reminder,
+        recurrence:
+          selectedEvent.recurrence,
+      }
+    );
 
-            setIsEditing(false);
-          }}
-        />
+    setIsEditing(false);
+  }}
+  onSuccess={() => {
+    setIsEditing(false);
+  }}
+/>
       </SectionCard>
     );
   }
