@@ -1,35 +1,31 @@
-import { ComingSoonCard } from "../cards/coming-soon-card";
-import { FinanceWidget } from "../widgets/finance-widget";
+import { ModuleCard } from "@/components/ui/module-card";
+import { SectionTitle } from "@/components/ui/section-title";
+
+import { dashboardModules } from "@/data/dashboard-modules";
 
 export function OverviewGrid() {
+  const modules = dashboardModules.filter(
+    (module) => module.showOnDashboard
+  );
+
   return (
-    <section className="grid gap-6 lg:grid-cols-2">
-      <FinanceWidget />
+    <section>
+      <SectionTitle
+        title="Próximos módulos"
+        description="Estas funcionalidades estarán disponibles en las siguientes versiones de MontoyaOS."
+      />
 
-      <div className="grid gap-6 sm:grid-cols-2">
-        <ComingSoonCard
-          emoji="📅"
-          title="Calendario"
-          description="Organiza eventos, reuniones y recordatorios importantes."
-        />
-
-        <ComingSoonCard
-          emoji="✅"
-          title="Tareas"
-          description="Gestiona tus pendientes y haz seguimiento a tus objetivos."
-        />
-
-        <ComingSoonCard
-          emoji="🤖"
-          title="IA"
-          description="Accede a asistentes inteligentes y automatizaciones personalizadas."
-        />
-
-        <ComingSoonCard
-          emoji="👨‍👩‍👧"
-          title="Familia"
-          description="Administra información y actividades familiares."
-        />
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        {modules.map((module) => (
+          <ModuleCard
+            key={module.href}
+            title={module.title}
+            description={module.description}
+            href={module.href}
+            icon={module.icon}
+            available={module.available}
+          />
+        ))}
       </div>
     </section>
   );

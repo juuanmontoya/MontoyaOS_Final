@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { Wallet } from "lucide-react";
 
+import { AppCard } from "@/components/ui/app-card";
+
 import { useFinanceStore } from "@/store/finance-store";
 import { getFinanceSummary } from "@/core/finance-engine";
 
@@ -31,7 +33,7 @@ export function FinanceWidget() {
   });
 
   return (
-    <div className="rounded-2xl border bg-card p-6 shadow-sm">
+    <AppCard>
       <div className="mb-5 flex items-center gap-3">
         <div className="rounded-xl bg-emerald-100 p-3">
           <Wallet className="h-6 w-6 text-emerald-700" />
@@ -105,6 +107,6 @@ export function FinanceWidget() {
           )}
         </div>
       </div>
-    </div>
+    </AppCard>
   );
 }

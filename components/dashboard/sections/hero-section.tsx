@@ -1,62 +1,86 @@
+import {
+  Brain,
+  Calendar,
+  CircleCheckBig,
+  Wallet,
+} from "lucide-react";
+
+import { AppCard } from "@/components/ui/app-card";
+
 export function HeroSection() {
-  const currentHour = new Date().getHours();
+  const now = new Date();
 
   const greeting =
-    currentHour < 12
+    now.getHours() < 12
       ? "Buenos días"
-      : currentHour < 18
+      : now.getHours() < 18
       ? "Buenas tardes"
       : "Buenas noches";
 
-  const today = new Intl.DateTimeFormat("es-CO", {
+  const formattedDate = new Intl.DateTimeFormat("es-CO", {
     weekday: "long",
     day: "numeric",
     month: "long",
     year: "numeric",
-  }).format(new Date());
-
-  const hero = {
-    greeting,
-    userName: "Juan",
-    status: "Sistema saludable",
-    summary:
-      "Todo está funcionando correctamente. Bienvenido a tu centro de control personal.",
-  };
+  }).format(now);
 
   return (
-    <section className="grid gap-6 lg:grid-cols-[1fr_280px]">
-      <div className="rounded-2xl border bg-card p-8 shadow-sm">
-        <p className="text-sm font-medium text-muted-foreground capitalize">
-          {today}
-        </p>
+    <AppCard className="overflow-hidden p-8">
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+        <div className="max-w-3xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+            🚀 MontoyaOS
+          </p>
 
-        <h1 className="mt-3 text-4xl font-bold tracking-tight">
-          {hero.greeting}, {hero.userName} 👋
-        </h1>
+          <h1 className="mt-4 text-5xl font-bold tracking-tight">
+            {greeting}, Juan 👋
+          </h1>
 
-        <p className="mt-4 max-w-2xl text-muted-foreground">
-          {hero.summary}
-        </p>
-      </div>
+          <p className="mt-3 text-lg text-muted-foreground capitalize">
+            {formattedDate}
+          </p>
 
-      <div className="rounded-2xl border bg-card p-6 shadow-sm">
-        <p className="text-sm text-muted-foreground">
-          Estado del sistema
-        </p>
-
-        <div className="mt-4 flex items-center gap-3">
-          <div className="h-3 w-3 rounded-full bg-green-500" />
-
-          <span className="font-semibold">
-            {hero.status}
-          </span>
+          <p className="mt-8 max-w-2xl text-base leading-7 text-muted-foreground">
+            Todo está listo para comenzar el día. Desde aquí podrás controlar
+            tus finanzas, tareas, calendario y los próximos módulos de
+            MontoyaOS desde un único lugar.
+          </p>
         </div>
 
-        <p className="mt-6 text-sm text-muted-foreground">
-          Próximamente este panel mostrará el estado general de Finanzas,
-          Tareas, Calendario e IA.
-        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="rounded-xl border bg-background p-4">
+            <Wallet className="mb-3 h-6 w-6 text-emerald-600" />
+            <p className="font-semibold">Balance positivo</p>
+            <p className="text-sm text-muted-foreground">
+              Tus finanzas están saludables.
+            </p>
+          </div>
+
+          <div className="rounded-xl border bg-background p-4">
+            <CircleCheckBig className="mb-3 h-6 w-6 text-green-600" />
+            <p className="font-semibold">Sistema estable</p>
+            <p className="text-sm text-muted-foreground">
+              Todos los módulos están funcionando.
+            </p>
+          </div>
+
+          <div className="rounded-xl border bg-background p-4">
+            <Calendar className="mb-3 h-6 w-6 text-blue-600" />
+            <p className="font-semibold">Agenda</p>
+            <p className="text-sm text-muted-foreground">
+              Sin eventos para hoy.
+            </p>
+          </div>
+
+          <div className="rounded-xl border bg-background p-4">
+            <Brain className="mb-3 h-6 w-6 text-violet-600" />
+            <p className="font-semibold">Daily Brief IA</p>
+            <p className="text-sm text-muted-foreground">
+              Próximamente disponible.
+            </p>
+          </div>
+        </div>
       </div>
-    </section>
+    </AppCard>
   );
 }

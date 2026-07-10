@@ -2,11 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { navigationItems } from "@/data/navigation";
+
+import { modules } from "@/data/modules";
 import { cn } from "@/lib/utils";
 
 export function AppSidebar() {
   const pathname = usePathname();
+
+  const sidebarModules = modules.filter(
+    (module) => module.showInSidebar
+  );
 
   return (
     <aside className="hidden w-64 shrink-0 border-r bg-background md:flex md:flex-col">
@@ -17,16 +22,18 @@ export function AppSidebar() {
       </div>
 
       <nav className="flex-1 space-y-1 p-4">
-        {navigationItems.map((item) => {
-          const Icon = item.icon;
+        {sidebarModules.map((module) => {
+          const Icon = module.icon;
+
           const isActive =
-            pathname === item.href ||
-            (item.href !== "/" && pathname.startsWith(item.href));
+            pathname === module.href ||
+            (module.href !== "/" &&
+              pathname.startsWith(module.href));
 
           return (
             <Link
-              key={item.title}
-              href={item.href}
+              key={module.href}
+              href={module.href}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 isActive
@@ -35,7 +42,8 @@ export function AppSidebar() {
               )}
             >
               <Icon size={20} />
-              <span>{item.title}</span>
+
+              <span>{module.title}</span>
             </Link>
           );
         })}
@@ -43,7 +51,10 @@ export function AppSidebar() {
 
       <div className="border-t p-4">
         <div className="space-y-1">
-          <p className="text-sm font-semibold">Juan Montoya</p>
+          <p className="text-sm font-semibold">
+            Juan Montoya
+          </p>
+
           <p className="text-xs text-muted-foreground">
             Sistema Operativo Personal
           </p>

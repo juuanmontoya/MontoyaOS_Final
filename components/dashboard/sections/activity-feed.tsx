@@ -1,47 +1,60 @@
+import { AppCard } from "@/components/ui/app-card";
+
 const activities = [
   {
-    title: "Bienvenido a MontoyaOS",
-    description: "Tu sistema operativo personal está listo para usarse.",
+    title: "Dashboard inicializado",
+    description: "MontoyaOS se encuentra funcionando correctamente.",
+    time: "Ahora mismo",
   },
   {
-    title: "Módulo de Finanzas",
-    description: "Integración disponible y lista para conectarse al Dashboard.",
+    title: "Módulo Finanzas",
+    description: "Información financiera sincronizada correctamente.",
+    time: "Hace unos segundos",
   },
   {
-    title: "Próximo paso",
-    description: "Implementar los widgets inteligentes del Home.",
+    title: "Dashboard Engine",
+    description: "Resumen general generado exitosamente.",
+    time: "Hace 1 minuto",
   },
 ];
 
 export function ActivityFeed() {
   return (
-    <section className="space-y-4">
-      <div>
+    <AppCard>
+      <div className="mb-6">
         <h2 className="text-xl font-semibold tracking-tight">
           Actividad reciente
         </h2>
 
-        <p className="text-sm text-muted-foreground">
-          Últimos eventos registrados en MontoyaOS.
+        <p className="mt-1 text-sm text-muted-foreground">
+          Últimos eventos registrados por MontoyaOS.
         </p>
       </div>
 
-      <div className="rounded-xl border bg-card">
-        {activities.map((activity, index) => (
+      <div className="space-y-5">
+        {activities.map((activity) => (
           <div
             key={activity.title}
-            className={`p-5 ${
-              index !== activities.length - 1 ? "border-b" : ""
-            }`}
+            className="flex items-start gap-4"
           >
-            <h3 className="font-medium">{activity.title}</h3>
+            <div className="mt-2 h-2.5 w-2.5 rounded-full bg-primary" />
 
-            <p className="mt-1 text-sm text-muted-foreground">
-              {activity.description}
-            </p>
+            <div className="flex-1">
+              <p className="font-medium">
+                {activity.title}
+              </p>
+
+              <p className="mt-1 text-sm text-muted-foreground">
+                {activity.description}
+              </p>
+            </div>
+
+            <span className="text-xs text-muted-foreground whitespace-nowrap">
+              {activity.time}
+            </span>
           </div>
         ))}
       </div>
-    </section>
+    </AppCard>
   );
 }

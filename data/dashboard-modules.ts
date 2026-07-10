@@ -1,0 +1,68 @@
+import {
+  BookOpen,
+  Calendar,
+  CheckSquare,
+  Home,
+  Megaphone,
+  Settings,
+  Wallet,
+} from "lucide-react";
+
+export const dashboardModules = [
+  {
+    title: "Dashboard",
+    description: "Centro de control de MontoyaOS.",
+    href: "/dashboard",
+    icon: Home,
+    available: true,
+    showOnDashboard: false,
+  },
+  {
+    title: "Finanzas",
+    description: "Gestiona ingresos, gastos y presupuesto.",
+    href: "/finances",
+    icon: Wallet,
+    available: true,
+    showOnDashboard: false,
+  },
+  {
+    title: "Calendario",
+    description: "Organiza reuniones, eventos y recordatorios.",
+    href: "/calendar",
+    icon: Calendar,
+    available: false,
+    showOnDashboard: true,
+  },
+  {
+    title: "Tareas",
+    description: "Gestiona pendientes y objetivos.",
+    href: "/tasks",
+    icon: CheckSquare,
+    available: false,
+    showOnDashboard: true,
+  },
+  {
+    title: "Biblia",
+    description: "Devocionales, estudios y lectura diaria.",
+    href: "/bible",
+    icon: BookOpen,
+    available: false,
+    showOnDashboard: true,
+  },
+  {
+    title: "Marketing",
+    description: "Clientes, campañas y estrategia digital.",
+    href: "/marketing",
+    icon: Megaphone,
+    available: false,
+    showOnDashboard: true,
+  },
+  {
+    title: "Configuración",
+    description: "Preferencias generales del sistema.",
+    href: "/settings",
+    icon: Settings,
+    available: false,
+    showOnDashboard: true,
+  },
+];
