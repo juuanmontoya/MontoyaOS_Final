@@ -44,19 +44,24 @@ export function HomeDashboard() {
 
 
   const dashboard = getDashboardSummary({
-    finance: {
-      transactions,
-      categories,
-    },
-  });
+  finance: {
+    transactions,
+    categories,
+  },
+
+  calendar: {
+    events,
+  },
+});
 
 
   return (
     <div className="space-y-8">
 
       <HeroWidget
-        brief={dashboard.brief}
-      />
+  brief={dashboard.brief}
+  nextEvent={dashboard.calendar.nextEvent}
+/>
 
 
       <FinanceWidget

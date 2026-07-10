@@ -9,6 +9,7 @@ import { AgendaList } from "@/components/calendar/agenda-list";
 import { EventDetails } from "@/components/calendar/event-details";
 
 import { useCalendarStore } from "@/store/calendar-store";
+import { CalendarGrid } from "@/components/calendar/calendar-grid";
 
 export function CalendarDashboard() {
   const events = useCalendarStore(
@@ -30,6 +31,7 @@ export function CalendarDashboard() {
         description="Administra tus eventos, reuniones y recordatorios."
       />
 
+<CalendarGrid events={events} />
       <section className="grid gap-8 xl:grid-cols-[420px_1fr]">
         <EventForm />
 

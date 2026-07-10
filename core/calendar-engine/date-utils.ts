@@ -37,3 +37,62 @@ export function formatCalendarDate(
     }
   );
 }
+export function getMonthDays(
+  year: number,
+  month: number
+) {
+  const firstDay = new Date(
+    year,
+    month,
+    1
+  );
+
+  const lastDay = new Date(
+    year,
+    month + 1,
+    0
+  );
+
+
+  const days = [];
+
+
+  for (
+    let i = 1;
+    i <= lastDay.getDate();
+    i++
+  ) {
+    days.push(
+      new Date(
+        year,
+        month,
+        i
+      )
+    );
+  }
+
+
+  return {
+    firstDay: firstDay.getDay(),
+    days,
+  };
+}
+
+
+
+export function isSameCalendarDay(
+  date: Date,
+  value: string
+) {
+  const eventDate = new Date(value);
+
+
+  return (
+    date.getFullYear() ===
+      eventDate.getFullYear() &&
+    date.getMonth() ===
+      eventDate.getMonth() &&
+    date.getDate() ===
+      eventDate.getDate()
+  );
+}
