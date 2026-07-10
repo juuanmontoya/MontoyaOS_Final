@@ -39,31 +39,35 @@ export function EventDetails() {
   }
 
   async function handleDelete() {
-    const confirmed = window.confirm(
-      "¿Seguro que quieres eliminar este evento?"
+  if (!selectedEvent) {
+    return;
+  }
+
+  const eventId = selectedEvent.id;
+
+  const confirmed = window.confirm(
+    "¿Seguro que quieres eliminar este evento?"
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    await removeEvent(eventId);
+
+    setSelectedEvent(null);
+
+    toast.success(
+      "Evento eliminado correctamente."
     );
 
-    if (!confirmed) {
-      return;
-    }
-
-    try {
-      await removeEvent(
-        selectedEvent.id
-      );
-
-      setSelectedEvent(null);
-
-      toast.success(
-        "Evento eliminado correctamente."
-      );
-
-    } catch {
-      toast.error(
-        "No fue posible eliminar el evento."
-      );
-    }
+  } catch {
+    toast.error(
+      "No fue posible eliminar el evento."
+    );
   }
+}
 
   if (isEditing) {
     return (
