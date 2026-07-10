@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
+import {
+  localDateTimeToISOString,
+} from "@/core/calendar-engine";
 import { toast } from "sonner";
 
 interface Props {
@@ -85,14 +89,14 @@ export function EventEditor({
       setIsSaving(true);
 
       await onSubmit({
-        title,
-        description,
-        start,
-        end,
-        all_day: allDay,
-        location,
-        color,
-      });
+  title,
+  description,
+  start: localDateTimeToISOString(start),
+  end: localDateTimeToISOString(end),
+  all_day: allDay,
+  location,
+  color,
+});
 
       toast.success(
         "Evento guardado correctamente."
