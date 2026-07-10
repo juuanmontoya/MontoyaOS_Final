@@ -3,6 +3,7 @@ import { create } from "zustand";
 import type {
   CalendarEvent,
   CalendarView,
+  CreateCalendarEvent,
 } from "@/types/calendar";
 
 import {
@@ -26,21 +27,17 @@ interface CalendarStore {
   loadEvents: () => Promise<void>;
 
   createEvent: (
-    event: Omit<
-      CalendarEvent,
-      "id" | "created_at" | "updated_at"
-    >
+    event: CreateCalendarEvent
   ) => Promise<void>;
 
   editEvent: (
     id: string,
-    event: Omit<
-      CalendarEvent,
-      "id" | "created_at" | "updated_at"
-    >
+    event: CreateCalendarEvent
   ) => Promise<void>;
 
-  removeEvent: (id: string) => Promise<void>;
+  removeEvent: (
+    id: string
+  ) => Promise<void>;
 
   setSelectedEvent: (
     event: CalendarEvent | null
@@ -80,6 +77,7 @@ export const useCalendarStore =
           events,
           isLoading: false,
         });
+
       } catch (error) {
         console.error(error);
 
@@ -98,12 +96,34 @@ export const useCalendarStore =
 
       try {
         const newEvent =
-          await addCalendarEvent(event);
+  await addCalendarEvent({
+    title: event.title,
+    description:
+      event.description ?? null,
+    start: event.start,
+    end: event.end,
+    all_day: event.all_day,
+    location:
+      event.location ?? null,
+    color: event.color,
+    source:
+      event.source ?? "calendar",
+    source_id:
+      event.source_id ?? null,
+    reminder:
+      event.reminder ?? null,
+    recurrence:
+      event.recurrence ?? null,
+  });
 
         set((state) => ({
-          events: [...state.events, newEvent],
+          events: [
+            ...state.events,
+            newEvent,
+          ],
           isLoading: false,
         }));
+
       } catch (error) {
         console.error(error);
 
@@ -115,7 +135,10 @@ export const useCalendarStore =
       }
     },
 
-    editEvent: async (id, event) => {
+    editEvent: async (
+      id,
+      event
+    ) => {
       set({
         isLoading: true,
       });
@@ -123,18 +146,38 @@ export const useCalendarStore =
       try {
         const updatedEvent =
           await updateCalendarEvent(
-            id,
-            event
-          );
+  id,
+  {
+    title: event.title,
+    description:
+      event.description ?? null,
+    start: event.start,
+    end: event.end,
+    all_day: event.all_day,
+    location:
+      event.location ?? null,
+    color: event.color,
+    source:
+      event.source ?? "calendar",
+    source_id:
+      event.source_id ?? null,
+    reminder:
+      event.reminder ?? null,
+    recurrence:
+      event.recurrence ?? null,
+  }
+);
 
         set((state) => ({
-          events: state.events.map((item) =>
-            item.id === id
-              ? updatedEvent
-              : item
-          ),
+          events:
+            state.events.map((item) =>
+              item.id === id
+                ? updatedEvent
+                : item
+            ),
           isLoading: false,
         }));
+
       } catch (error) {
         console.error(error);
 
@@ -155,15 +198,20 @@ export const useCalendarStore =
         await deleteCalendarEvent(id);
 
         set((state) => ({
-          events: state.events.filter(
-            (item) => item.id !== id
-          ),
+          events:
+            state.events.filter(
+              (item) =>
+                item.id !== id
+            ),
+
           selectedEvent:
             state.selectedEvent?.id === id
               ? null
               : state.selectedEvent,
+
           isLoading: false,
         }));
+
       } catch (error) {
         console.error(error);
 

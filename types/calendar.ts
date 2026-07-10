@@ -6,9 +6,16 @@ export type EventSource =
   | "marketing"
   | "ai";
 
-export type CalendarView = "month" | "week" | "day" | "agenda";
+export type CalendarView =
+  | "month"
+  | "week"
+  | "day"
+  | "agenda";
 
-export type ReminderUnit = "minutes" | "hours" | "days";
+export type ReminderUnit =
+  | "minutes"
+  | "hours"
+  | "days";
 
 export interface Reminder {
   value: number;
@@ -29,6 +36,7 @@ export interface Recurrence {
 
 export interface CalendarEvent {
   id: string;
+
   title: string;
   description: string | null;
 
@@ -50,4 +58,27 @@ export interface CalendarEvent {
 
   created_at: string;
   updated_at: string;
+}
+
+export interface CreateCalendarEvent {
+  title: string;
+
+  description?: string | null;
+
+  start: string;
+  end: string;
+
+  all_day: boolean;
+
+  location?: string | null;
+
+  color: string;
+
+  source?: EventSource;
+
+  source_id?: string | null;
+
+  reminder?: Reminder | null;
+
+  recurrence?: Recurrence | null;
 }
