@@ -1,31 +1,15 @@
-"use client";
-
-import { useEffect } from "react";
 import { Wallet } from "lucide-react";
 
 import { AppCard } from "@/components/ui/app-card";
+import type { FinanceSummary } from "@/core/finance-engine";
 
-import { useFinanceStore } from "@/store/finance-store";
-import { getFinanceSummary } from "@/core/finance-engine";
+interface FinanceWidgetProps {
+  summary: FinanceSummary;
+}
 
-export function FinanceWidget() {
-  const {
-    transactions,
-    categories,
-    loadTransactions,
-    loadCategories,
-  } = useFinanceStore();
-
-  useEffect(() => {
-    loadTransactions();
-    loadCategories();
-  }, [loadTransactions, loadCategories]);
-
-  const summary = getFinanceSummary(
-    transactions,
-    categories
-  );
-
+export function FinanceWidget({
+  summary,
+}: FinanceWidgetProps) {
   const formatter = new Intl.NumberFormat("es-CO", {
     style: "currency",
     currency: "COP",
