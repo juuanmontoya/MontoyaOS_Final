@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 
 import { Bell, Menu, Search } from "lucide-react";
@@ -13,6 +14,8 @@ import {
 } from "@/components/ui/sheet";
 
 export function AppHeader() {
+  const [open, setOpen] = useState(false);
+
   const sidebarModules = modules.filter(
     (module) => module.showInSidebar
   );
@@ -22,7 +25,7 @@ export function AppHeader() {
       {/* MOBILE */}
 
       <div className="flex items-center gap-3 md:hidden">
-        <Sheet>
+        <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <button className="rounded-xl p-2 transition hover:bg-gray-100">
               <Menu size={22} />
@@ -42,6 +45,7 @@ export function AppHeader() {
                   <Link
                     key={module.href}
                     href={module.href}
+                    onClick={() => setOpen(false)}
                     className="flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-gray-100"
                   >
                     <Icon size={18} />
