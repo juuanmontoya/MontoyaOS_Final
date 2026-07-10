@@ -1,4 +1,4 @@
-import type { DashboardSummary } from "./summary";
+import type { FinanceSummary } from "@/core/finance-engine";
 
 export interface DashboardBriefItem {
   id: string;
@@ -7,12 +7,14 @@ export interface DashboardBriefItem {
   description: string;
 }
 
-export function generateDashboardBrief(
-  summary: DashboardSummary
-): DashboardBriefItem[] {
-  const brief: DashboardBriefItem[] = [];
+interface DashboardBriefInput {
+  finance: FinanceSummary;
+}
 
-  const finance = summary.finance;
+export function generateDashboardBrief({
+  finance,
+}: DashboardBriefInput): DashboardBriefItem[] {
+  const brief: DashboardBriefItem[] = [];
 
   if (finance.health.score >= 90) {
     brief.push({
