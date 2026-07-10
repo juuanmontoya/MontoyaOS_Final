@@ -1,3 +1,5 @@
+import { CalendarDashboard } from "@/components/calendar/calendar-dashboard";
+
 export default function Page() {
-  return <h1>Calendario</h1>;
+  return <CalendarDashboard />;
 }
