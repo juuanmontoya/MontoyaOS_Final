@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { TaskPrioritySelect } from "./task-priority-select";
 import { TaskDateSelect } from "./task-date-select";
 import { TaskCategorySelect } from "./task-category-select";
+import { TaskReminderSelect } from "./task-reminder-select";
 
 import type { TaskPriority } from "@/types/task";
 
@@ -17,6 +18,7 @@ interface TaskQuickAddProps {
     priority: TaskPriority;
     due_date: string | null;
     category: string | null;
+    reminder_at: string | null;
   }) => Promise<void>;
 }
 
@@ -34,6 +36,9 @@ export function TaskQuickAdd({
   const [category, setCategory] =
     useState<string | null>(null);
 
+  const [reminderAt, setReminderAt] =
+    useState<string | null>(null);
+
   async function handleSubmit() {
     const cleanTitle = title.trim();
 
@@ -44,12 +49,14 @@ export function TaskQuickAdd({
       priority,
       due_date: dueDate,
       category,
+      reminder_at: reminderAt,
     });
 
     setTitle("");
     setPriority("medium");
     setDueDate(null);
     setCategory(null);
+    setReminderAt(null);
   }
 
   return (
@@ -81,6 +88,11 @@ export function TaskQuickAdd({
         <TaskCategorySelect
           value={category}
           onChange={setCategory}
+        />
+
+        <TaskReminderSelect
+          value={reminderAt}
+          onChange={setReminderAt}
         />
 
         <Button

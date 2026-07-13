@@ -10,29 +10,30 @@ import { useTasksStore } from "@/store/tasks-store";
 
 export function TasksPage() {
   const {
-  loading,
-  loadTasks,
-  createTask,
-  toggleTaskComplete,
-  updateTask,
-  deleteTask,
-  getFilteredTasks,
-} = useTasksStore();
+    loading,
+    loadTasks,
+    createTask,
+    toggleTaskComplete,
+    updateTask,
+    deleteTask,
+    getFilteredTasks,
+  } = useTasksStore();
 
-const filteredTasks = getFilteredTasks();
+  const filteredTasks = getFilteredTasks();
 
   useEffect(() => {
     loadTasks();
   }, [loadTasks]);
 
   async function handleCreateTask(data: {
-  title: string;
-  priority: "low" | "medium" | "high" | "urgent";
-  due_date: string | null;
-  category: string | null;
-}) {
-  await createTask(data);
-}
+    title: string;
+    priority: "low" | "medium" | "high" | "urgent";
+    due_date: string | null;
+    category: string | null;
+    reminder_at: string | null;
+  }) {
+    await createTask(data);
+  }
 
   async function handleUpdateTask(
     id: string,
@@ -75,11 +76,11 @@ const filteredTasks = getFilteredTasks();
         </div>
       ) : (
         <TaskList
-  tasks={filteredTasks}
-  onToggleComplete={toggleTaskComplete}
-  onUpdate={handleUpdateTask}
-  onDelete={handleDeleteTask}
-/>
+          tasks={filteredTasks}
+          onToggleComplete={toggleTaskComplete}
+          onUpdate={handleUpdateTask}
+          onDelete={handleDeleteTask}
+        />
       )}
     </main>
   );
