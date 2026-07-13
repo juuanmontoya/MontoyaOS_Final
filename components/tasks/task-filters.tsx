@@ -3,10 +3,9 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-import {
-  useTasksStore,
-  type TaskFilter,
-} from "@/store/tasks-store";
+import { useTasksStore } from "@/store/tasks-store";
+
+import type { TaskFilter } from "@/core/tasks-engine/filters";
 
 const FILTERS: {
   label: string;
@@ -38,8 +37,10 @@ export function TaskFilters() {
   const {
     activeFilter,
     setFilter,
-    tasks,
+    getFilteredTasks,
   } = useTasksStore();
+
+  const total = getFilteredTasks().length;
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-4">
@@ -63,7 +64,7 @@ export function TaskFilters() {
       </div>
 
       <Badge variant="secondary">
-        {tasks.length} tareas
+        {total} tareas
       </Badge>
     </div>
   );
