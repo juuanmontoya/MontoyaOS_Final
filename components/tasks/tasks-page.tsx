@@ -29,6 +29,7 @@ const filteredTasks = getFilteredTasks();
   title: string;
   priority: "low" | "medium" | "high" | "urgent";
   due_date: string | null;
+  category: string | null;
 }) {
   await createTask(data);
 }
