@@ -1,3 +1,5 @@
+import { TasksPage } from "@/components/tasks/tasks-page";
+
 export default function Page() {
-  return <h1>Tareas</h1>;
+  return <TasksPage />;
 }
