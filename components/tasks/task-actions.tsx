@@ -30,7 +30,7 @@ export function TaskActions({
         <Button
           variant="ghost"
           size="icon"
-          className="opacity-0 transition-opacity group-hover:opacity-100"
+          className="opacity-100 md:opacity-0 md:group-hover:opacity-100"
         >
           <MoreHorizontal className="h-4 w-4" />
         </Button>
