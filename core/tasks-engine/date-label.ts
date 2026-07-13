@@ -1,24 +1,15 @@
-function parseLocalDate(date: string) {
-  const cleanDate = date.split("T")[0];
-
-  const [year, month, day] =
-    cleanDate.split("-");
-
-  return new Date(
-    Number(year),
-    Number(month) - 1,
-    Number(day)
-  );
-}
+import {
+  diffInDays,
+  parseLocalDate,
+  startOfToday,
+} from "./date-utils";
 
 export function getTaskDateLabel(
   dueDate: string | null
 ): string | null {
   if (!dueDate) return null;
 
-  const today = new Date();
-
-  today.setHours(0, 0, 0, 0);
+  const today = startOfToday();
 
   const date = parseLocalDate(dueDate);
 
@@ -28,9 +19,10 @@ export function getTaskDateLabel(
 
   date.setHours(0, 0, 0, 0);
 
-  const diff =
-    (date.getTime() - today.getTime()) /
-    (1000 * 60 * 60 * 24);
+  const diff = diffInDays(
+    today,
+    date
+  );
 
   if (diff < 0) {
     return "🔴 Vencida";

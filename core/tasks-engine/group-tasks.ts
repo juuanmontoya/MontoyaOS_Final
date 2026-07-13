@@ -1,5 +1,11 @@
 import type { Task } from "@/types/task";
 
+import {
+  diffInDays,
+  parseLocalDate,
+  startOfToday,
+} from "./date-utils";
+
 export interface TaskGroups {
   overdue: Task[];
   today: Task[];
@@ -8,25 +14,10 @@ export interface TaskGroups {
   completed: Task[];
 }
 
-function parseLocalDate(date: string) {
-  const cleanDate = date.split("T")[0];
-
-  const [year, month, day] =
-    cleanDate.split("-");
-
-  return new Date(
-    Number(year),
-    Number(month) - 1,
-    Number(day)
-  );
-}
-
 export function groupTasks(
   tasks: Task[]
 ): TaskGroups {
-  const today = new Date();
-
-  today.setHours(0, 0, 0, 0);
+  const today = startOfToday();
 
   const groups: TaskGroups = {
     overdue: [],
@@ -53,9 +44,10 @@ export function groupTasks(
 
     dueDate.setHours(0, 0, 0, 0);
 
-    const diff =
-      (dueDate.getTime() - today.getTime()) /
-      (1000 * 60 * 60 * 24);
+    const diff = diffInDays(
+      today,
+      dueDate
+    );
 
     if (diff < 0) {
       groups.overdue.push(task);

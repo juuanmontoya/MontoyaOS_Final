@@ -9,14 +9,10 @@ import {
   deleteTask as deleteTaskService,
 } from "@/services/tasks-service";
 
-import { groupTasks } from "@/core/tasks-engine/group-tasks";
-
-export type TaskFilter =
-  | "all"
-  | "pending"
-  | "today"
-  | "overdue"
-  | "completed";
+import {
+  getTasksByFilter,
+  type TaskFilter,
+} from "@/core/tasks-engine/filters";
 
 interface CreateTaskInput {
   title: string;
@@ -86,13 +82,18 @@ export const useTasksStore = create<TasksStore>(
         await createTaskService({
           title,
           description: null,
+
           status: "todo",
           priority,
+
           due_date,
           category,
+
           tags: [],
+
           reminder_at: null,
           completed_at: null,
+
           project_id: null,
           parent_task_id: null,
         });
@@ -199,38 +200,10 @@ export const useTasksStore = create<TasksStore>(
         activeFilter,
       } = get();
 
-      if (
-        activeFilter === "all"
-      ) {
-        return tasks;
-      }
-
-      const groups =
-        groupTasks(tasks);
-
-      switch (
+      return getTasksByFilter(
+        tasks,
         activeFilter
-      ) {
-        case "pending":
-          return [
-            ...groups.overdue,
-            ...groups.today,
-            ...groups.upcoming,
-            ...groups.noDate,
-          ];
-
-        case "today":
-          return groups.today;
-
-        case "overdue":
-          return groups.overdue;
-
-        case "completed":
-          return groups.completed;
-
-        default:
-          return tasks;
-      }
+      );
     },
   })
 );
