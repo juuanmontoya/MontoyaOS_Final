@@ -3,23 +3,47 @@ import type { CalendarEvent } from "@/types/calendar";
 
 interface HeroWidgetProps {
   brief: DashboardBriefItem[];
+
   nextEvent: CalendarEvent | null;
+
+  tasks: {
+    total: number;
+    pending: number;
+    completed: number;
+    overdue: number;
+  };
 }
 
 
 export function HeroWidget({
   brief,
   nextEvent,
+  tasks,
 }: HeroWidgetProps) {
 
-  const today = new Date().toLocaleDateString(
-    "es-CO",
-    {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-    }
-  );
+  const today =
+    new Date().toLocaleDateString(
+      "es-CO",
+      {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+      }
+    );
+
+
+  const priorityBrief =
+    [
+      ...brief.filter(
+        (item) =>
+          item.id.startsWith("tasks")
+      ),
+
+      ...brief.filter(
+        (item) =>
+          !item.id.startsWith("tasks")
+      ),
+    ].slice(0, 2);
 
 
   return (
@@ -45,6 +69,32 @@ export function HeroWidget({
         <p className="mt-2 text-lg capitalize text-blue-100">
           {today}
         </p>
+
+
+        <div className="mt-6 grid grid-cols-2 gap-3">
+
+          <div className="rounded-2xl bg-white/15 p-4 backdrop-blur">
+            <p className="text-xs uppercase text-blue-100">
+              Pendientes
+            </p>
+
+            <p className="mt-1 text-3xl font-bold">
+              {tasks.pending}
+            </p>
+          </div>
+
+
+          <div className="rounded-2xl bg-white/15 p-4 backdrop-blur">
+            <p className="text-xs uppercase text-blue-100">
+              Vencidas
+            </p>
+
+            <p className="mt-1 text-3xl font-bold">
+              {tasks.overdue}
+            </p>
+          </div>
+
+        </div>
 
 
         {nextEvent ? (
@@ -90,26 +140,20 @@ export function HeroWidget({
         )}
 
 
-        {brief.length > 0 && (
+        {priorityBrief.length > 0 && (
 
           <div className="mt-6 flex flex-wrap gap-3">
 
-            {brief
-              .filter(
-                (item) =>
-                  !item.id.startsWith("calendar")
-              )
-              .slice(0, 2)
-              .map((item) => (
+            {priorityBrief.map((item) => (
 
-                <span
-                  key={item.id}
-                  className="rounded-full bg-white/20 px-4 py-2 text-sm font-semibold backdrop-blur"
-                >
-                  {item.title}
-                </span>
+              <span
+                key={item.id}
+                className="rounded-full bg-white/20 px-4 py-2 text-sm font-semibold backdrop-blur"
+              >
+                {item.title}
+              </span>
 
-              ))}
+            ))}
 
           </div>
         )}

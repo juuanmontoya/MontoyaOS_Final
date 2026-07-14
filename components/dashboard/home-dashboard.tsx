@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 import { useFinanceStore } from "@/store/finance-store";
 import { useCalendarStore } from "@/store/calendar-store";
+import { useTasksStore } from "@/store/tasks-store";
 
 import { getDashboardSummary } from "@/core/dashboard-engine";
 
@@ -15,6 +16,7 @@ import { CalendarWidget } from "@/components/calendar/calendar-widget";
 import { QuickActions } from "./sections/quick-actions";
 import { ActivityFeed } from "./sections/activity-feed";
 import { OverviewGrid } from "./sections/overview-grid";
+import { TasksWidget } from "./widgets/tasks-widget";
 
 
 export function HomeDashboard() {
@@ -32,27 +34,40 @@ export function HomeDashboard() {
   } = useCalendarStore();
 
 
+  const {
+    tasks,
+    loadTasks,
+  } = useTasksStore();
+
+
   useEffect(() => {
     loadTransactions();
     loadCategories();
     loadEvents();
+    loadTasks();
   }, [
     loadTransactions,
     loadCategories,
     loadEvents,
+    loadTasks,
   ]);
 
 
-  const dashboard = getDashboardSummary({
-  finance: {
-    transactions,
-    categories,
-  },
+  const dashboard =
+    getDashboardSummary({
+      finance: {
+        transactions,
+        categories,
+      },
 
-  calendar: {
-    events,
-  },
-});
+      calendar: {
+        events,
+      },
+
+      tasks: {
+        tasks,
+      },
+    });
 
 
   return (
@@ -61,12 +76,18 @@ export function HomeDashboard() {
       <HeroWidget
   brief={dashboard.brief}
   nextEvent={dashboard.calendar.nextEvent}
+  tasks={dashboard.tasks}
 />
 
 
       <FinanceWidget
-        summary={dashboard.finance}
-      />
+  summary={dashboard.finance}
+/>
+
+<TasksWidget
+  tasks={tasks}
+/>
+
 
 
       <CalendarWidget

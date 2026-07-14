@@ -2,13 +2,16 @@ import {
   BookOpen,
   Calendar,
   CheckSquare,
+  FolderKanban,
   Home,
   Megaphone,
   Settings,
   Wallet,
 } from "lucide-react";
 
-export const modules = [
+import type { Module } from "@/types/module";
+
+export const modules: Module[] = [
   {
     title: "Dashboard",
     description: "Centro de control de MontoyaOS.",
@@ -41,7 +44,16 @@ export const modules = [
     description: "Gestiona pendientes y objetivos.",
     href: "/tasks",
     icon: CheckSquare,
-    available: false,
+    available: true,
+    showInSidebar: true,
+    showOnDashboard: true,
+  },
+  {
+    title: "Projects",
+    description: "Agrupa tareas y organiza proyectos.",
+    href: "/projects",
+    icon: FolderKanban,
+    available: true,
     showInSidebar: true,
     showOnDashboard: true,
   },

@@ -1,5 +1,4 @@
 import type { FinanceSummary } from "@/core/finance-engine";
-import type { CalendarEvent } from "@/types/calendar";
 
 export interface DashboardBriefItem {
   id: string;
@@ -12,25 +11,28 @@ export interface DashboardBriefItem {
 interface DashboardBriefInput {
   finance: FinanceSummary;
 
-  calendar: {
-    nextEvent: CalendarEvent | null;
+  tasks: {
+    pending: number;
+    overdue: number;
+    today: number;
   };
 }
 
 
 export function generateDashboardBrief({
   finance,
-  calendar,
+  tasks,
 }: DashboardBriefInput): DashboardBriefItem[] {
 
   const brief: DashboardBriefItem[] = [];
 
 
   if (finance.health.score >= 90) {
+
     brief.push({
       id: "finance-excellent",
       type: "success",
-      title: "Finanzas saludables",
+      title: "💰 Finanzas saludables",
       description:
         "Tus finanzas presentan un excelente estado este mes.",
     });
@@ -40,7 +42,7 @@ export function generateDashboardBrief({
     brief.push({
       id: "finance-good",
       type: "info",
-      title: "Buen desempeño",
+      title: "💰 Buen desempeño financiero",
       description:
         "Tus finanzas van por buen camino, continúa registrando tus movimientos.",
     });
@@ -50,10 +52,11 @@ export function generateDashboardBrief({
     brief.push({
       id: "finance-warning",
       type: "warning",
-      title: "Revisa tus gastos",
+      title: "⚠️ Revisa tus gastos",
       description:
         "Tus indicadores financieros muestran oportunidades de mejora.",
     });
+
   }
 
 
@@ -67,40 +70,42 @@ export function generateDashboardBrief({
       title: insight.title,
       description: insight.description,
     });
+
   }
 
 
-  if (calendar.nextEvent) {
-
-    const eventDate =
-      new Date(
-        calendar.nextEvent.start
-      ).toLocaleString(
-        "es-CO",
-        {
-          dateStyle: "medium",
-          timeStyle: "short",
-        }
-      );
-
+  if (tasks.overdue > 0) {
 
     brief.push({
-      id: "calendar-next-event",
-      type: "info",
-      title: "Próximo evento",
+      id: "tasks-overdue",
+      type: "warning",
+      title: "🔴 Tienes tareas atrasadas",
       description:
-        `${calendar.nextEvent.title} · ${eventDate}`,
+        `${tasks.overdue} tareas requieren atención.`,
     });
 
-  } else {
+
+  } else if (tasks.today > 0) {
 
     brief.push({
-      id: "calendar-empty",
+      id: "tasks-today",
       type: "info",
-      title: "Agenda libre",
+      title: "📋 Prioridades para hoy",
       description:
-        "No tienes próximos eventos programados.",
+        `${tasks.today} tareas están programadas para hoy.`,
     });
+
+
+  } else if (tasks.pending > 0) {
+
+    brief.push({
+      id: "tasks-pending",
+      type: "info",
+      title: "📋 Revisa tus tareas pendientes",
+      description:
+        `${tasks.pending} tareas esperan tu atención.`,
+    });
+
   }
 
 

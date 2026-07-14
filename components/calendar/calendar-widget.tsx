@@ -25,11 +25,11 @@ export function CalendarWidget({
 
         <div>
           <h2 className="text-xl font-bold">
-            📅 Próximos eventos
+            📅 Agenda
           </h2>
 
           <p className="mt-1 text-sm text-muted-foreground">
-            Tus próximas actividades.
+            Tus próximas actividades programadas.
           </p>
         </div>
 
