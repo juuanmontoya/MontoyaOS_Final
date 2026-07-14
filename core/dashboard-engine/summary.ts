@@ -72,17 +72,28 @@ export function getDashboardSummary(
 
 
   const tasks = {
-    total: tasksList.length,
+  total: tasksList.length,
 
-    pending:
-      getPendingTasks(tasksList),
+  pending:
+    getPendingTasks(tasksList),
 
-    completed:
-      getCompletedTasks(tasksList),
+  completed:
+    getCompletedTasks(tasksList),
 
-    overdue:
-      getOverdueTasks(tasksList),
-  };
+  overdue:
+    getOverdueTasks(tasksList),
+
+  today:
+    tasksList.filter(
+      (task) =>
+        task.status !== "completed" &&
+        task.due_date &&
+        new Date(task.due_date)
+          .toDateString() ===
+        new Date()
+          .toDateString()
+    ).length,
+};
 
 
   return {
