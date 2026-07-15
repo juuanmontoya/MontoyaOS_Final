@@ -8,6 +8,7 @@ import type { Project } from "@/types/project";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 import { useProjectsStore } from "@/store/project-store";
 
@@ -32,6 +33,11 @@ export function ProjectForm({
     project?.name ?? ""
   );
 
+  const [description, setDescription] =
+    useState(
+      project?.description ?? ""
+    );
+
   const [color, setColor] = useState(
     project?.color ?? DEFAULT_COLOR
   );
@@ -54,6 +60,8 @@ export function ProjectForm({
           project.id,
           {
             name,
+            description:
+              description.trim() || null,
             color,
             icon,
           }
@@ -61,6 +69,8 @@ export function ProjectForm({
       } else {
         await createProject({
           name,
+          description:
+            description.trim(),
           color,
           icon,
         });
@@ -73,7 +83,8 @@ export function ProjectForm({
   }
 
   return (
-    <Card className="p-6 space-y-6">
+    <Card className="space-y-6 p-6">
+
       <div className="space-y-2">
         <label className="text-sm font-medium">
           Nombre
@@ -88,7 +99,25 @@ export function ProjectForm({
         />
       </div>
 
+      <div className="space-y-2">
+        <label className="text-sm font-medium">
+          Descripción
+        </label>
+
+        <Textarea
+          rows={4}
+          placeholder="Describe este proyecto..."
+          value={description}
+          onChange={(e) =>
+            setDescription(
+              e.target.value
+            )
+          }
+        />
+      </div>
+
       <div className="grid gap-6 md:grid-cols-2">
+
         <div className="space-y-2">
           <label className="text-sm font-medium">
             Color
@@ -117,9 +146,11 @@ export function ProjectForm({
             }
           />
         </div>
+
       </div>
 
       <div className="flex justify-end">
+
         <Button
           onClick={handleSubmit}
           disabled={saving}
@@ -130,7 +161,9 @@ export function ProjectForm({
             ? "Guardar cambios"
             : "Crear proyecto"}
         </Button>
+
       </div>
+
     </Card>
   );
 }

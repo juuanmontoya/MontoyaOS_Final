@@ -13,6 +13,7 @@ import type { TaskPriority } from "@/types/task";
 interface TaskPrioritySelectProps {
   value: TaskPriority;
   onChange: (value: TaskPriority) => void;
+  compact?: boolean;
 }
 
 const PRIORITIES: {
@@ -21,33 +22,42 @@ const PRIORITIES: {
 }[] = [
   {
     value: "low",
-    label: "Baja",
+    label: "⚪ Baja",
   },
   {
     value: "medium",
-    label: "Media",
+    label: "🔵 Media",
   },
   {
     value: "high",
-    label: "Alta",
+    label: "🟠 Alta",
   },
   {
     value: "urgent",
-    label: "Urgente",
+    label: "🔴 Urgente",
   },
 ];
 
 export function TaskPrioritySelect({
   value,
   onChange,
+  compact = false,
 }: TaskPrioritySelectProps) {
   return (
     <Select
       value={value}
-      onValueChange={onChange}
+      onValueChange={(value) =>
+        onChange(value as TaskPriority)
+      }
     >
-      <SelectTrigger className="w-[130px]">
-        <SelectValue placeholder="Prioridad" />
+      <SelectTrigger
+        className={
+          compact
+            ? "h-8 w-[150px]"
+            : "w-[150px]"
+        }
+      >
+        <SelectValue />
       </SelectTrigger>
 
       <SelectContent>

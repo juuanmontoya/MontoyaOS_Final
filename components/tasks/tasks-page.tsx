@@ -26,14 +26,15 @@ export function TasksPage() {
   }, [loadTasks]);
 
   async function handleCreateTask(data: {
-    title: string;
-    priority: "low" | "medium" | "high" | "urgent";
-    due_date: string | null;
-    category: string | null;
-    reminder_at: string | null;
-  }) {
-    await createTask(data);
-  }
+  title: string;
+  priority: "low" | "medium" | "high" | "urgent";
+  due_date: string | null;
+  category: string | null;
+  reminder_at: string | null;
+  project_id: string | null;
+}) {
+  await createTask(data);
+}
 
   async function handleUpdateTask(
     id: string,

@@ -20,6 +20,7 @@ interface CreateTaskInput {
   due_date: string | null;
   category: string | null;
   reminder_at: string | null;
+  project_id: string | null;
 }
 
 interface TasksStore {
@@ -74,12 +75,13 @@ export const useTasksStore = create<TasksStore>(
     },
 
     createTask: async ({
-      title,
-      priority,
-      due_date,
-      category,
-      reminder_at,
-    }) => {
+  title,
+  priority,
+  due_date,
+  category,
+  reminder_at,
+  project_id,
+}) => {
       const newTask =
         await createTaskService({
           title,
@@ -96,7 +98,7 @@ export const useTasksStore = create<TasksStore>(
           reminder_at,
           completed_at: null,
 
-          project_id: null,
+          project_id,
           parent_task_id: null,
         });
 

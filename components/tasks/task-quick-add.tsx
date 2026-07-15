@@ -10,19 +10,25 @@ import { TaskDateSelect } from "./task-date-select";
 import { TaskCategorySelect } from "./task-category-select";
 import { TaskReminderSelect } from "./task-reminder-select";
 
+import { ProjectSelect } from "@/components/projects/forms/project-select";
+
 import type { TaskPriority } from "@/types/task";
 
 interface TaskQuickAddProps {
+  defaultProjectId?: string | null;
+
   onCreate: (data: {
     title: string;
     priority: TaskPriority;
     due_date: string | null;
     category: string | null;
     reminder_at: string | null;
+    project_id: string | null;
   }) => Promise<void>;
 }
 
 export function TaskQuickAdd({
+  defaultProjectId = null,
   onCreate,
 }: TaskQuickAddProps) {
   const [title, setTitle] = useState("");
@@ -39,6 +45,11 @@ export function TaskQuickAdd({
   const [reminderAt, setReminderAt] =
     useState<string | null>(null);
 
+  const [projectId, setProjectId] =
+    useState<string | null>(
+      defaultProjectId
+    );
+
   async function handleSubmit() {
     const cleanTitle = title.trim();
 
@@ -50,6 +61,7 @@ export function TaskQuickAdd({
       due_date: dueDate,
       category,
       reminder_at: reminderAt,
+      project_id: projectId,
     });
 
     setTitle("");
@@ -57,6 +69,10 @@ export function TaskQuickAdd({
     setDueDate(null);
     setCategory(null);
     setReminderAt(null);
+
+    if (!defaultProjectId) {
+      setProjectId(null);
+    }
   }
 
   return (
@@ -89,6 +105,13 @@ export function TaskQuickAdd({
           value={category}
           onChange={setCategory}
         />
+
+        {!defaultProjectId && (
+          <ProjectSelect
+            value={projectId}
+            onChange={setProjectId}
+          />
+        )}
 
         <TaskReminderSelect
           value={reminderAt}
