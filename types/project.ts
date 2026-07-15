@@ -1,4 +1,6 @@
-export type ProjectStatus = "active" | "archived";
+export type ProjectStatus =
+  | "active"
+  | "archived";
 
 export interface Project {
   id: string;
@@ -18,12 +20,16 @@ export interface Project {
 
 export interface CreateProjectInput {
   name: string;
-  description?: string;
+
+  description: string | null;
+
   color: string;
   icon: string;
 }
 
 export interface UpdateProjectInput
-  extends Partial<CreateProjectInput> {
+  extends Partial<
+    CreateProjectInput
+  > {
   status?: ProjectStatus;
 }
