@@ -32,6 +32,11 @@ export function KanbanColumn({
     isOver,
   } = useDroppable({
     id: status,
+
+    data: {
+      type: "column",
+      status,
+    },
   });
 
   return (

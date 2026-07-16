@@ -35,6 +35,11 @@ export function KanbanTaskCard({
     isDragging,
   } = useSortable({
     id: task.id,
+
+    data: {
+      type: "task",
+      task,
+    },
   });
 
   const style = {

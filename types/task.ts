@@ -19,6 +19,8 @@ export interface Task {
   status: TaskStatus;
   priority: TaskPriority;
 
+  position: number;
+
   due_date: string | null;
 
   category: string | null;
@@ -39,6 +41,25 @@ export interface Task {
 
 export interface CreateTaskInput {
   title: string;
+
+  description?: string | null;
+
+  status?: TaskStatus;
+  priority?: TaskPriority;
+
+  position?: number;
+
+  due_date?: string | null;
+
+  category?: string | null;
+
+  tags?: string[];
+
+  reminder_at?: string | null;
+
+  project_id?: string | null;
+
+  parent_task_id?: string | null;
 }
 
 export interface UpdateTaskInput {
@@ -47,6 +68,8 @@ export interface UpdateTaskInput {
 
   status?: TaskStatus;
   priority?: TaskPriority;
+
+  position?: number;
 
   due_date?: string | null;
 
