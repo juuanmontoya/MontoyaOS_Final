@@ -2,18 +2,33 @@
 
 import type { DragEndEvent } from "@dnd-kit/core";
 
-import type { Task } from "@/types/task";
+import type {
+  Task,
+  TaskStatus,
+} from "@/types/task";
 
 import { KanbanColumn } from "./kanban-column";
 import { KanbanProvider } from "./kanban-provider";
+
+import { useTasksStore } from "@/store/tasks-store";
 
 interface KanbanBoardProps {
   tasks: Task[];
 }
 
+const VALID_STATUSES: TaskStatus[] = [
+  "todo",
+  "in_progress",
+  "completed",
+  "cancelled",
+];
+
 export function KanbanBoard({
   tasks,
 }: KanbanBoardProps) {
+  const { updateTask } =
+    useTasksStore();
+
   const todoTasks = tasks.filter(
     (task) =>
       task.status === "todo"
@@ -40,12 +55,54 @@ export function KanbanBoard({
         "cancelled"
     );
 
-  function handleDragEnd(
+  async function handleDragEnd(
     event: DragEndEvent
   ) {
-    console.log(
-      "Drag End",
-      event
+    const {
+      active,
+      over,
+    } = event;
+
+    if (!over) return;
+
+    const taskId =
+      String(active.id);
+
+    const overId =
+      String(over.id);
+
+    // Si no es una columna válida,
+    // seguramente cayó sobre otra tarjeta.
+    if (
+      !VALID_STATUSES.includes(
+        overId as TaskStatus
+      )
+    ) {
+      return;
+    }
+
+    const newStatus =
+      overId as TaskStatus;
+
+    const task =
+      tasks.find(
+        (item) =>
+          item.id === taskId
+      );
+
+    if (!task) return;
+
+    if (
+      task.status === newStatus
+    ) {
+      return;
+    }
+
+    await updateTask(
+      task.id,
+      {
+        status: newStatus,
+      }
     );
   }
 
@@ -59,11 +116,13 @@ export function KanbanBoard({
 
         <KanbanColumn
           title="📝 Por hacer"
+          status="todo"
           tasks={todoTasks}
         />
 
         <KanbanColumn
           title="🚀 En progreso"
+          status="in_progress"
           tasks={
             inProgressTasks
           }
@@ -71,6 +130,7 @@ export function KanbanBoard({
 
         <KanbanColumn
           title="✅ Completadas"
+          status="completed"
           tasks={
             completedTasks
           }
@@ -78,6 +138,7 @@ export function KanbanBoard({
 
         <KanbanColumn
           title="❌ Canceladas"
+          status="cancelled"
           tasks={
             cancelledTasks
           }
