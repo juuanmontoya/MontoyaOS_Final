@@ -11,6 +11,7 @@ import {
   getTasks,
   createTask as createTaskService,
   updateTask as updateTaskService,
+  updateTasks as updateTasksService,
   deleteTask as deleteTaskService,
 } from "@/services/tasks-service";
 
@@ -45,13 +46,18 @@ interface TasksStore {
   ) => Promise<void>;
 
   updateTask: (
-    id: string,
-    updates: UpdateTaskInput
-  ) => Promise<void>;
+  id: string,
+  updates: UpdateTaskInput
+) => Promise<void>;
 
-  deleteTask: (
-    id: string
-  ) => Promise<void>;
+updateTasks: (
+  tasks: Task[]
+) => Promise<void>;
+
+deleteTask: (
+  id: string
+) => Promise<void>;
+
 
   toggleTaskComplete: (
     id: string
@@ -171,6 +177,27 @@ export const useTasksStore =
             ),
         }));
       },
+
+      updateTasks: async (
+  tasks
+) => {
+  const success =
+    await updateTasksService(
+      tasks.map((task) => ({
+        id: task.id,
+        status: task.status,
+        position: task.position,
+      }))
+    );
+
+  if (!success) {
+    return;
+  }
+
+  set({
+    tasks: reorderTasks(tasks),
+  });
+},
 
       deleteTask: async (
         id

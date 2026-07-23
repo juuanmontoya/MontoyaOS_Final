@@ -1,105 +1,122 @@
 import { create } from "zustand";
+
 import type { Category } from "@/types/category";
+import type {
+  CreateTransactionInput,
+  Transaction,
+} from "@/types/finance";
+
 import { categoryService } from "@/services/category-service";
+
 import {
-  getTransactions,
   addTransaction,
+  getTransactions,
   updateTransaction,
 } from "@/services/finance-service";
 
-export type TransactionType = "income" | "expense";
-
-export interface Transaction {
-  id: string;
-  description: string;
-  amount: number;
-  type: TransactionType;
-
-  category_id: string;
-
-  category?: Category;
-
-  created_at: string;
-}
-
 interface FinanceStore {
   transactions: Transaction[];
+
   categories: Category[];
 
   isLoading: boolean;
 
   loadTransactions: () => Promise<void>;
+
   loadCategories: () => Promise<void>;
 
   createTransaction: (
-    transaction: Omit<Transaction, "id" | "category" | "created_at">
+    transaction: CreateTransactionInput
   ) => Promise<void>;
 
   editTransaction: (
     id: string,
-    transaction: Omit<Transaction, "id" | "category" | "created_at">
+    transaction: CreateTransactionInput
   ) => Promise<void>;
 }
 
-export const useFinanceStore = create<FinanceStore>((set) => ({
-  transactions: [],
-  categories: [],
-  isLoading: false,
+export const useFinanceStore =
+  create<FinanceStore>((set) => ({
+    transactions: [],
 
-  loadTransactions: async () => {
-    set({ isLoading: true });
+    categories: [],
 
-    try {
-      const transactions = await getTransactions();
+    isLoading: false,
 
+    loadTransactions: async () => {
       set({
-        transactions,
-        isLoading: false,
-      });
-    } catch (error) {
-      console.error(error);
-
-      set({
-        isLoading: false,
+        isLoading: true,
       });
 
-      throw error;
-    }
-  },
+      try {
+        const transactions =
+          await getTransactions();
 
-  loadCategories: async () => {
-    try {
-      const categories =
-        await categoryService.getCategories();
+        set({
+          transactions,
+          isLoading: false,
+        });
+      } catch (error) {
+        console.error(error);
 
-      set({
-        categories,
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  },
+        set({
+          isLoading: false,
+        });
 
-  createTransaction: async (transaction) => {
-    const newTransaction =
-      await addTransaction(transaction);
+        throw error;
+      }
+    },
 
-    set((state) => ({
-      transactions: [
-        newTransaction,
-        ...state.transactions,
-      ],
-    }));
-  },
+    loadCategories: async () => {
+      try {
+        const categories =
+          await categoryService.getCategories();
 
-  editTransaction: async (id, transaction) => {
-    const updatedTransaction =
-      await updateTransaction(id, transaction);
+        set({
+          categories,
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    },
 
-    set((state) => ({
-      transactions: state.transactions.map((item) =>
-        item.id === id ? updatedTransaction : item
-      ),
-    }));
-  },
-}));
+    createTransaction: async (
+      transaction
+    ) => {
+      const newTransaction =
+        await addTransaction({
+          ...transaction,
+          account_type: "cash",
+        });
+
+      set((state) => ({
+        transactions: [
+          newTransaction,
+          ...state.transactions,
+        ],
+      }));
+    },
+
+    editTransaction: async (
+      id,
+      transaction
+    ) => {
+      const updatedTransaction =
+        await updateTransaction(
+          id,
+          {
+            ...transaction,
+            account_type: "cash",
+          }
+        );
+
+      set((state) => ({
+        transactions:
+          state.transactions.map((item) =>
+            item.id === id
+              ? updatedTransaction
+              : item
+          ),
+      }));
+    },
+  }));

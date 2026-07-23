@@ -33,6 +33,7 @@ export async function addTransaction(transaction: {
   category_id: string;
   type: "income" | "expense";
   amount: number;
+  account_type: "cash" | "digital";
 }) {
   const { data, error } = await supabase
     .from(TABLE)
@@ -67,6 +68,7 @@ export async function updateTransaction(
     category_id: string;
     type: "income" | "expense";
     amount: number;
+    account_type: "cash" | "digital";
   }
 ) {
   const { data, error } = await supabase

@@ -1,29 +1,43 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
 import { toast } from "sonner";
 
-import { useFinanceStore } from "@/store/finance-store";
 import { CategorySelector } from "@/components/finances/category-selector";
+import { TransactionSubmitButton } from "@/components/finances/transaction-submit-button";
+import { TransactionTypeToggle } from "@/components/finances/transaction-type-toggle";
+import { AccountTypeToggle } from "@/components/finances/account-type-toggle";
+
+import { useFinanceStore } from "@/store/finance-store";
+
+import type {
+  AccountType,
+  CreateTransactionInput,
+  TransactionType,
+} from "@/types/finance";
 
 interface Props {
   initialValues?: {
     description: string;
     amount: number;
-    type: "income" | "expense";
+    type: TransactionType;
     category_id: string;
+    account_type: AccountType;
   };
 
   submitLabel: string;
 
   resetAfterSubmit?: boolean;
 
-  onSubmit: (data: {
-    description: string;
-    amount: number;
-    type: "income" | "expense";
-    category_id: string;
-  }) => Promise<void>;
+  onSubmit: (
+    data: CreateTransactionInput
+  ) => Promise<void>;
 
   onSuccess?: () => void;
 }
@@ -35,144 +49,247 @@ export function TransactionEditor({
   onSubmit,
   onSuccess,
 }: Props) {
-  const categories = useFinanceStore((s) => s.categories);
-  const loadCategories = useFinanceStore((s) => s.loadCategories);
-
-  const [description, setDescription] = useState(
-    initialValues?.description ?? ""
+  const categories = useFinanceStore(
+    (s) => s.categories
   );
+
+  const loadCategories = useFinanceStore(
+    (s) => s.loadCategories
+  );
+
+  const [description, setDescription] =
+    useState(
+      initialValues?.description ?? ""
+    );
 
   const [amount, setAmount] = useState(
     initialValues?.amount?.toString() ?? ""
   );
 
-  const [type, setType] = useState<"income" | "expense">(
-    initialValues?.type ?? "expense"
-  );
+  const [type, setType] =
+    useState<TransactionType>(
+      initialValues?.type ??
+        "expense"
+    );
 
-  const [categoryId, setCategoryId] = useState(
-    initialValues?.category_id ?? ""
-  );
+  const [accountType, setAccountType] =
+    useState<AccountType>(
+      initialValues?.account_type ??
+        "cash"
+    );
 
-  const [isSaving, setIsSaving] = useState(false);
+  const [categoryId, setCategoryId] =
+    useState(
+      initialValues?.category_id ?? ""
+    );
+
+  const [isSaving, setIsSaving] =
+    useState(false);
 
   useEffect(() => {
     loadCategories();
   }, [loadCategories]);
 
-  const filteredCategories = useMemo(() => {
-    return categories.filter((c) => c.type === type);
-  }, [categories, type]);
+  const filteredCategories =
+    useMemo(
+      () =>
+        categories.filter(
+          (category) =>
+            category.type === type
+        ),
+      [categories, type]
+    );
+
+  const expenseCategories =
+    useMemo(
+      () =>
+        categories.filter(
+          (category) =>
+            category.type ===
+            "expense"
+        ),
+      [categories]
+    );
 
   useEffect(() => {
     if (
-      filteredCategories.length > 0 &&
-      !filteredCategories.some((c) => c.id === categoryId)
+      filteredCategories.length >
+        0 &&
+      !filteredCategories.some(
+        (category) =>
+          category.id ===
+          categoryId
+      )
     ) {
-      setCategoryId(filteredCategories[0].id);
+      setCategoryId(
+        filteredCategories[0].id
+      );
     }
-  }, [filteredCategories, categoryId]);
+  }, [
+    filteredCategories,
+    categoryId,
+  ]);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  const resetForm =
+    useCallback(() => {
+      setDescription("");
+      setAmount("");
+      setType("expense");
+      setAccountType("cash");
 
-    if (!description || !amount || !categoryId) {
-      toast.warning("Completa todos los campos.");
-      return;
-    }
-
-    try {
-      setIsSaving(true);
-
-      await onSubmit({
-        description,
-        amount: Number(amount),
-        type,
-        category_id: categoryId,
-      });
-
-      toast.success("Movimiento guardado correctamente.");
-
-      if (resetAfterSubmit) {
-        setDescription("");
-        setAmount("");
-        setType("expense");
-
-        const expenseCategories = categories.filter(
-          (c) => c.type === "expense"
+      if (
+        expenseCategories.length > 0
+      ) {
+        setCategoryId(
+          expenseCategories[0].id
         );
-
-        if (expenseCategories.length > 0) {
-          setCategoryId(expenseCategories[0].id);
-        }
       }
+    }, [expenseCategories]);
 
-      onSuccess?.();
-    } catch {
-      toast.error("No fue posible guardar el movimiento.");
-    } finally {
-      setIsSaving(false);
-    }
-  }
+  const handleSubmit =
+    useCallback(
+      async (
+        e: React.FormEvent<HTMLFormElement>
+      ) => {
+        e.preventDefault();
+
+        const trimmedDescription =
+          description.trim();
+
+        const parsedAmount =
+          Number(amount);
+
+        if (
+          !trimmedDescription ||
+          !categoryId
+        ) {
+          toast.warning(
+            "Completa todos los campos."
+          );
+          return;
+        }
+
+        if (
+          Number.isNaN(
+            parsedAmount
+          ) ||
+          parsedAmount <= 0
+        ) {
+          toast.warning(
+            "Ingresa un valor válido."
+          );
+          return;
+        }
+
+        try {
+          setIsSaving(true);
+
+          await onSubmit({
+            description:
+              trimmedDescription,
+            amount: parsedAmount,
+            type,
+            category_id:
+              categoryId,
+            account_type:
+              accountType,
+          });
+
+          toast.success(
+            "Movimiento guardado correctamente."
+          );
+
+          if (
+            resetAfterSubmit
+          ) {
+            resetForm();
+          }
+
+          onSuccess?.();
+        } catch {
+          toast.error(
+            "No fue posible guardar el movimiento."
+          );
+        } finally {
+          setIsSaving(false);
+        }
+      },
+      [
+        amount,
+        accountType,
+        categoryId,
+        description,
+        onSubmit,
+        onSuccess,
+        resetAfterSubmit,
+        resetForm,
+        type,
+      ]
+    );
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      <div className="flex gap-3">
-        <button
-          type="button"
-          disabled={isSaving}
-          onClick={() => setType("expense")}
-          className={`flex-1 rounded-xl p-3 font-semibold transition ${
-            type === "expense"
-              ? "bg-red-500 text-white"
-              : "bg-gray-100"
-          }`}
-        >
-          Gasto
-        </button>
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-5"
+    >
+      <TransactionTypeToggle
+        value={type}
+        disabled={isSaving}
+        onChange={setType}
+      />
 
-        <button
-          type="button"
-          disabled={isSaving}
-          onClick={() => setType("income")}
-          className={`flex-1 rounded-xl p-3 font-semibold transition ${
-            type === "income"
-              ? "bg-green-500 text-white"
-              : "bg-gray-100"
-          }`}
-        >
-          Ingreso
-        </button>
-      </div>
+      <AccountTypeToggle
+        value={accountType}
+        disabled={isSaving}
+        onChange={
+          setAccountType
+        }
+      />
 
       <CategorySelector
-        categories={filteredCategories}
+        categories={
+          filteredCategories
+        }
         value={categoryId}
-        onChange={setCategoryId}
+        onChange={
+          setCategoryId
+        }
       />
 
       <input
+        autoFocus
+        autoComplete="off"
+        disabled={isSaving}
         className="w-full rounded-xl border p-3"
         placeholder="Descripción"
         value={description}
-        onChange={(e) => setDescription(e.target.value)}
+        onChange={(e) =>
+          setDescription(
+            e.target.value
+          )
+        }
       />
 
       <input
+        type="number"
+        min={1}
+        inputMode="decimal"
+        autoComplete="off"
+        disabled={isSaving}
         className="w-full rounded-xl border p-3"
         placeholder="Valor"
-        type="number"
         value={amount}
-        onChange={(e) => setAmount(e.target.value)}
+        onChange={(e) =>
+          setAmount(
+            e.target.value
+          )
+        }
       />
 
-      <button
-        type="submit"
-        disabled={isSaving}
-        className="w-full rounded-xl bg-blue-600 p-3 font-semibold text-white"
-      >
-        {isSaving ? "Guardando..." : submitLabel}
-      </button>
+      <TransactionSubmitButton
+        loading={isSaving}
+        label={submitLabel}
+      />
     </form>
   );
 }

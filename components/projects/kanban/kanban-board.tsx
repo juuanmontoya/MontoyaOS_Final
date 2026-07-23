@@ -10,10 +10,11 @@ import type {
 
 import type {
   Task,
-  TaskStatus,
 } from "@/types/task";
 
 import { useTasksStore } from "@/store/tasks-store";
+
+import { resolveKanbanMove } from "@/core/projects-engine/kanban-move";
 
 import { KanbanColumn } from "./kanban-column";
 import { KanbanProvider } from "./kanban-provider";
@@ -23,18 +24,12 @@ interface KanbanBoardProps {
   tasks: Task[];
 }
 
-const VALID_STATUSES: TaskStatus[] = [
-  "todo",
-  "in_progress",
-  "completed",
-  "cancelled",
-];
-
 export function KanbanBoard({
   tasks,
 }: KanbanBoardProps) {
-  const { updateTask } =
-    useTasksStore();
+  const {
+    updateTask,
+  } = useTasksStore();
 
   const [
     activeTask,
@@ -90,66 +85,33 @@ export function KanbanBoard({
   }
 
   async function handleDragEnd(
-  event: DragEndEvent
-) {
-  const {
-    active,
-    over,
-  } = event;
-
-  setActiveTask(null);
-
-  if (!over) return;
-
-  const activeTask =
-    active.data.current?.task as
-      | Task
-      | undefined;
-
-  if (!activeTask) {
-    return;
-  }
-
-  let newStatus: TaskStatus | null =
-    null;
-
-  const overData =
-    over.data.current;
-
-  if (
-    overData?.type ===
-    "column"
+    event: DragEndEvent
   ) {
-    newStatus =
-      overData.status;
-  }
+    setActiveTask(null);
 
-  if (
-    overData?.type ===
-    "task"
-  ) {
-    newStatus =
-      overData.task.status;
-  }
+    const move =
+      resolveKanbanMove(
+        event
+      );
 
-  if (!newStatus) {
-    return;
-  }
-
-  if (
-    activeTask.status ===
-    newStatus
-  ) {
-    return;
-  }
-
-  await updateTask(
-    activeTask.id,
-    {
-      status: newStatus,
+    if (!move) {
+      return;
     }
-  );
-}
+
+    if (
+      move.task.status ===
+      move.status
+    ) {
+      return;
+    }
+
+    await updateTask(
+      move.task.id,
+      {
+        status: move.status,
+      }
+    );
+  }
 
   return (
     <KanbanProvider
