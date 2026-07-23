@@ -84,10 +84,9 @@ export const useFinanceStore =
       transaction
     ) => {
       const newTransaction =
-        await addTransaction({
-          ...transaction,
-          account_type: "cash",
-        });
+        await addTransaction(
+          transaction
+        );
 
       set((state) => ({
         transactions: [
@@ -104,10 +103,7 @@ export const useFinanceStore =
       const updatedTransaction =
         await updateTransaction(
           id,
-          {
-            ...transaction,
-            account_type: "cash",
-          }
+          transaction
         );
 
       set((state) => ({
