@@ -1,4 +1,4 @@
-import type { Transaction } from "@/store/finance-store";
+import type { Transaction } from "@/types/finance";
 import type { Category } from "@/types/category";
 
 import { calculateFinanceHealth } from "./health";

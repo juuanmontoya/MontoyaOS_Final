@@ -1,5 +1,5 @@
 import type { Category } from "@/types/category";
-import type { Transaction } from "@/store/finance-store";
+import type { Transaction } from "@/types/finance";
 import type { CalendarEvent } from "@/types/calendar";
 import type { Task } from "@/types/task";
 
@@ -12,7 +12,6 @@ import {
 } from "@/core/tasks-engine";
 
 import { generateDashboardBrief } from "./brief";
-
 
 export interface DashboardContext {
   finance: {
@@ -29,7 +28,6 @@ export interface DashboardContext {
   };
 }
 
-
 export interface DashboardSummary {
   finance: ReturnType<typeof getFinanceSummary>;
 
@@ -42,71 +40,60 @@ export interface DashboardSummary {
     pending: number;
     completed: number;
     overdue: number;
+    today: number;
   };
 
   brief: ReturnType<typeof generateDashboardBrief>;
 }
 
-
 export function getDashboardSummary(
   context: DashboardContext
 ): DashboardSummary {
-
-  const finance =
-    getFinanceSummary(
-      context.finance.transactions,
-      context.finance.categories
-    );
-
+  const finance = getFinanceSummary(
+    context.finance.transactions,
+    context.finance.categories
+  );
 
   const calendar = {
-    nextEvent:
-      getNextEvent(
-        context.calendar?.events ?? []
-      ),
+    nextEvent: getNextEvent(
+      context.calendar?.events ?? []
+    ),
   };
-
 
   const tasksList =
     context.tasks?.tasks ?? [];
 
-
   const tasks = {
-  total: tasksList.length,
+    total: tasksList.length,
 
-  pending:
-    getPendingTasks(tasksList),
+    pending:
+      getPendingTasks(tasksList),
 
-  completed:
-    getCompletedTasks(tasksList),
+    completed:
+      getCompletedTasks(tasksList),
 
-  overdue:
-    getOverdueTasks(tasksList),
+    overdue:
+      getOverdueTasks(tasksList),
 
-  today:
-    tasksList.filter(
+    today: tasksList.filter(
       (task) =>
         task.status !== "completed" &&
         task.due_date &&
-        new Date(task.due_date)
-          .toDateString() ===
-        new Date()
-          .toDateString()
+        new Date(
+          task.due_date
+        ).toDateString() ===
+          new Date().toDateString()
     ).length,
-};
-
+  };
 
   return {
     finance,
-
     calendar,
-
     tasks,
 
-    brief:
-  generateDashboardBrief({
-    finance,
-    tasks,
-  }),
+    brief: generateDashboardBrief({
+      finance,
+      tasks,
+    }),
   };
 }

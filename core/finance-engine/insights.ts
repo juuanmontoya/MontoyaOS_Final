@@ -1,4 +1,4 @@
-import type { Transaction } from "@/store/finance-store";
+import type { Transaction } from "@/types/finance";
 
 export interface FinanceInsight {
   id: string;
@@ -11,16 +11,29 @@ export function generateFinanceInsights(
   transactions: Transaction[]
 ): FinanceInsight[] {
   const income = transactions
-    .filter((t) => t.type === "income")
-    .reduce((sum, t) => sum + t.amount, 0);
+    .filter(
+      (transaction) =>
+        transaction.type === "income"
+    )
+    .reduce(
+      (sum, transaction) =>
+        sum + transaction.amount,
+      0
+    );
 
   const expenses = transactions
-    .filter((t) => t.type === "expense")
-    .reduce((sum, t) => sum + t.amount, 0);
+    .filter(
+      (transaction) =>
+        transaction.type === "expense"
+    )
+    .reduce(
+      (sum, transaction) =>
+        sum + transaction.amount,
+      0
+    );
 
   const insights: FinanceInsight[] = [];
 
-  // Balance
   if (income > expenses) {
     insights.push({
       id: "healthy-balance",
@@ -39,7 +52,6 @@ export function generateFinanceInsights(
     });
   }
 
-  // Frecuencia
   if (transactions.length >= 15) {
     insights.push({
       id: "activity",
@@ -49,14 +61,16 @@ export function generateFinanceInsights(
     });
   }
 
-  // Ahorro
   if (income > 0) {
     const savingRate =
       ((income - expenses) / income) * 100;
 
     insights.push({
       id: "saving-rate",
-      type: savingRate >= 20 ? "success" : "warning",
+      type:
+        savingRate >= 20
+          ? "success"
+          : "warning",
       title: "Capacidad de ahorro",
       description: `Actualmente estás ahorrando aproximadamente ${savingRate.toFixed(
         1
