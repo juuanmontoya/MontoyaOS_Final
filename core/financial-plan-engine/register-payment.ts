@@ -26,22 +26,26 @@ export async function registerCommitmentPayment(
   if (
     commitment.finance_category_id
   ) {
-    await financeStore.createTransaction(
-      {
-        type: "expense",
+    await financeStore.createTransaction({
+  type: "expense",
 
-        description:
-          commitment.name,
+  description:
+    commitment.name,
 
-        amount:
-          commitment.monthly_amount,
+  amount:
+    commitment.monthly_amount,
 
-        category_id:
-          commitment.finance_category_id,
+  category_id:
+    commitment.finance_category_id,
 
-        date: new Date().toISOString(),
-      }
-    );
+  account_type:
+    "digital",
+
+  transaction_date:
+    new Date()
+      .toISOString()
+      .split("T")[0],
+});
 
     const transactions =
       useFinanceStore.getState()
