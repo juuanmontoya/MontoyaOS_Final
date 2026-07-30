@@ -7,12 +7,15 @@ import {
   useState,
 } from "react";
 
+import { format } from "date-fns";
 import { toast } from "sonner";
 
 import { CategorySelector } from "@/components/finances/category-selector";
 import { TransactionSubmitButton } from "@/components/finances/transaction-submit-button";
 import { TransactionTypeToggle } from "@/components/finances/transaction-type-toggle";
 import { AccountTypeToggle } from "@/components/finances/account-type-toggle";
+
+import { DateField } from "@/components/design-system/fields/date-field";
 
 import { useFinanceStore } from "@/store/finance-store";
 
@@ -29,6 +32,7 @@ interface Props {
     type: TransactionType;
     category_id: string;
     account_type: AccountType;
+    transaction_date?: string;
   };
 
   submitLabel: string;
@@ -57,6 +61,11 @@ export function TransactionEditor({
     (s) => s.loadCategories
   );
 
+  const today = format(
+    new Date(),
+    "yyyy-MM-dd"
+  );
+
   const [description, setDescription] =
     useState(
       initialValues?.description ?? ""
@@ -81,6 +90,12 @@ export function TransactionEditor({
   const [categoryId, setCategoryId] =
     useState(
       initialValues?.category_id ?? ""
+    );
+
+  const [transactionDate, setTransactionDate] =
+    useState(
+      initialValues?.transaction_date ??
+        today
     );
 
   const [isSaving, setIsSaving] =
@@ -136,6 +151,7 @@ export function TransactionEditor({
       setAmount("");
       setType("expense");
       setAccountType("cash");
+      setTransactionDate(today);
 
       if (
         expenseCategories.length > 0
@@ -144,7 +160,10 @@ export function TransactionEditor({
           expenseCategories[0].id
         );
       }
-    }, [expenseCategories]);
+    }, [
+      expenseCategories,
+      today,
+    ]);
 
   const handleSubmit =
     useCallback(
@@ -193,6 +212,8 @@ export function TransactionEditor({
               categoryId,
             account_type:
               accountType,
+            transaction_date:
+              transactionDate,
           });
 
           toast.success(
@@ -223,6 +244,7 @@ export function TransactionEditor({
         onSuccess,
         resetAfterSubmit,
         resetForm,
+        transactionDate,
         type,
       ]
     );
@@ -284,6 +306,14 @@ export function TransactionEditor({
             e.target.value
           )
         }
+      />
+
+      <DateField
+        value={transactionDate}
+        onChange={
+          setTransactionDate
+        }
+        disabled={isSaving}
       />
 
       <TransactionSubmitButton

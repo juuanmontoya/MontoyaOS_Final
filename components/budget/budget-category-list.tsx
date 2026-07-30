@@ -78,13 +78,8 @@ export function BudgetCategoryList({
             </h2>
 
             <p className="text-muted-foreground">
-              {
-                summary.commitments
-                  .length
-              }{" "}
-              compromiso
-              {summary.commitments
-                .length !== 1
+              {summary.commitments.length} compromiso
+              {summary.commitments.length !== 1
                 ? "s"
                 : ""}
             </p>
@@ -92,9 +87,7 @@ export function BudgetCategoryList({
         </div>
 
         <FinancialCommitmentDialog
-          categoryId={
-            category.id
-          }
+          categoryId={category.id}
           trigger={
             <button className="rounded-xl border px-4 py-2 text-sm font-medium hover:bg-muted">
               + Agregar compromiso
@@ -104,17 +97,15 @@ export function BudgetCategoryList({
       </div>
 
       <div className="mt-8 space-y-3">
-        {summary.commitments
-          .length === 0 ? (
+        {summary.commitments.length ===
+        0 ? (
           <div className="rounded-xl border border-dashed p-10 text-center">
             <p className="font-medium">
-              No hay compromisos
-              todavía.
+              No hay compromisos todavía.
             </p>
 
             <p className="mt-2 text-sm text-muted-foreground">
-              Agrega el primero
-              para esta categoría.
+              Agrega el primero para esta categoría.
             </p>
           </div>
         ) : (
@@ -126,11 +117,8 @@ export function BudgetCategoryList({
                 key={
                   commitment.id
                 }
-                name={
-                  commitment.name
-                }
-                amount={
-                  commitment.monthly_amount
+                commitment={
+                  commitment
                 }
               />
             )

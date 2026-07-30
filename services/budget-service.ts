@@ -14,7 +14,7 @@ export async function getBudgetItems() {
     await supabase
       .from(TABLE)
       .select("*")
-      .order("created_at", {
+      .order("day", {
         ascending: true,
       });
 
@@ -48,16 +48,33 @@ export async function createBudgetItem(
       "❌ CREATE COMMITMENT"
     );
 
-    console.log("Objeto:");
     console.dir(error);
 
-    console.log("message:", error.message);
-    console.log("details:", error.details);
-    console.log("hint:", error.hint);
-    console.log("code:", error.code);
+    console.log(
+      "message:",
+      error.message
+    );
 
-    console.log("Payload enviado:");
-    console.log(item);
+    console.log(
+      "details:",
+      error.details
+    );
+
+    console.log(
+      "hint:",
+      error.hint
+    );
+
+    console.log(
+      "code:",
+      error.code
+    );
+
+    console.log(
+      "Payload:"
+    );
+
+    console.dir(item);
 
     console.groupEnd();
 
@@ -83,7 +100,9 @@ export async function updateBudgetItem(
     console.group(
       "❌ UPDATE COMMITMENT"
     );
+
     console.error(error);
+
     console.groupEnd();
 
     throw error;
@@ -105,7 +124,9 @@ export async function deleteBudgetItem(
     console.group(
       "❌ DELETE COMMITMENT"
     );
+
     console.error(error);
+
     console.groupEnd();
 
     throw error;

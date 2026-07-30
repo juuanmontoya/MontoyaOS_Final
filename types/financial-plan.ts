@@ -15,6 +15,12 @@ export interface FinancialCommitment {
 
   year: number;
 
+  paid: boolean;
+
+  paid_at: string | null;
+
+  transaction_id: string | null;
+
   created_at: string;
 }
 
@@ -48,4 +54,10 @@ export interface UpdateFinancialCommitmentInput {
   month?: number;
 
   year?: number;
+
+  paid?: boolean;
+
+  paid_at?: string | null;
+
+  transaction_id?: string | null;
 }

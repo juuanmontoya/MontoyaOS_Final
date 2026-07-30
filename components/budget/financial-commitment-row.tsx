@@ -1,39 +1,42 @@
 "use client";
 
-import { Pencil, Trash2 } from "lucide-react";
+import {
+  CheckCircle2,
+  Pencil,
+  Trash2,
+} from "lucide-react";
+
+import type {
+  FinancialCommitment,
+} from "@/types/financial-plan";
 
 interface Props {
-  name: string;
-  amount: number;
-  covered?: number;
+  commitment: FinancialCommitment;
 }
 
 export function FinancialCommitmentRow({
-  name,
-  amount,
-  covered = 0,
+  commitment,
 }: Props) {
-  const progress =
-    amount === 0
-      ? 0
-      : Math.min(
-          (covered / amount) * 100,
-          100
-        );
-
   return (
     <div className="rounded-xl border p-4 transition hover:border-primary/40">
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between">
         <div>
           <h4 className="font-medium">
-            {name}
+            {commitment.name}
           </h4>
 
-          <p className="text-sm text-muted-foreground">
-            Necesitas cubrir $
-            {amount.toLocaleString(
+          <p className="mt-1 text-sm text-muted-foreground">
+            $
+            {commitment.monthly_amount.toLocaleString(
               "es-CO"
             )}
+          </p>
+
+          <p className="mt-1 text-xs text-muted-foreground">
+            Vence el día{" "}
+            <span className="font-medium">
+              {commitment.day}
+            </span>
           </p>
         </div>
 
@@ -48,26 +51,15 @@ export function FinancialCommitmentRow({
         </div>
       </div>
 
-      <div className="mt-4 h-2 overflow-hidden rounded-full bg-muted">
-        <div
-          className="h-full rounded-full bg-primary transition-all"
-          style={{
-            width: `${progress}%`,
-          }}
-        />
-      </div>
-
-      <div className="mt-2 flex justify-between text-xs text-muted-foreground">
-        <span>
-          Cubierto $
-          {covered.toLocaleString(
-            "es-CO"
-          )}
+      <div className="mt-5 flex items-center justify-between">
+        <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+          Pendiente
         </span>
 
-        <span>
-          {progress.toFixed(0)}%
-        </span>
+        <button className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90">
+          <CheckCircle2 size={16} />
+          Registrar pago
+        </button>
       </div>
     </div>
   );

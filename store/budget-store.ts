@@ -32,6 +32,11 @@ interface BudgetStore {
   deleteBudget: (
     id: string
   ) => Promise<void>;
+
+  markAsPaid: (
+    id: string,
+    transactionId?: string
+  ) => Promise<void>;
 }
 
 export const useBudgetStore =
@@ -110,6 +115,33 @@ export const useBudgetStore =
           state.items.filter(
             (item) =>
               item.id !== id
+          ),
+      }));
+    },
+
+    markAsPaid: async (
+      id,
+      transactionId
+    ) => {
+      const updatedItem =
+        await updateBudgetItem(
+          id,
+          {
+            paid: true,
+            paid_at:
+              new Date().toISOString(),
+            transaction_id:
+              transactionId ??
+              null,
+          }
+        );
+
+      set((state) => ({
+        items:
+          state.items.map((item) =>
+            item.id === id
+              ? updatedItem
+              : item
           ),
       }));
     },

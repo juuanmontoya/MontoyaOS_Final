@@ -15,7 +15,12 @@ export async function getTransactions() {
         type
       )
     `)
-    .order("created_at", { ascending: false });
+    .order("transaction_date", {
+      ascending: false,
+    })
+    .order("created_at", {
+      ascending: false,
+    });
 
   if (error) {
     console.group("❌ SUPABASE ERROR - GET");
@@ -34,6 +39,7 @@ export async function addTransaction(transaction: {
   type: "income" | "expense";
   amount: number;
   account_type: "cash" | "digital";
+  transaction_date: string;
 }) {
   const { data, error } = await supabase
     .from(TABLE)
@@ -69,6 +75,7 @@ export async function updateTransaction(
     type: "income" | "expense";
     amount: number;
     account_type: "cash" | "digital";
+    transaction_date: string;
   }
 ) {
   const { data, error } = await supabase
