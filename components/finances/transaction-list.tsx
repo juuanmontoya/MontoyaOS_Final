@@ -105,8 +105,8 @@ export function TransactionList() {
     {month.label}
   </h2>
 
-  <div className="mt-4 grid grid-cols-3 gap-4">
-    <div className="rounded-2xl bg-green-50 border border-green-100 p-4">
+  <div className="mt-4 grid grid-cols-3 gap-2">
+    <div className="rounded-2xl bg-green-50 border border-green-100 p-2 md:p-4">
   <p className="text-xs font-medium uppercase tracking-wide text-green-700">
     💵 Ingresos
   </p>
@@ -119,12 +119,12 @@ export function TransactionList() {
   </p>
 </div>
 
-<div className="rounded-2xl bg-red-50 border border-red-100 p-4">
+<div className="rounded-2xl bg-red-50 border border-red-100 p-2 md:p-4">
   <p className="text-xs font-medium uppercase tracking-wide text-red-700">
     💸 Gastos
   </p>
 
-  <p className="mt-2 text-base md:text-xl font-bold text-red-700">
+  <p className="mt-2 text-xs sm:text-sm md:text-xl font-bold text-red-700">
     $
     {summary.expense.toLocaleString(
       "es-CO"
@@ -132,13 +132,13 @@ export function TransactionList() {
   </p>
 </div>
 
-<div className="rounded-2xl bg-blue-50 border border-blue-100 p-4">
+<div className="rounded-2xl bg-blue-50 border border-blue-100 p-2 md:p-4">
   <p className="text-xs font-medium uppercase tracking-wide text-blue-700">
     📈 Balance
   </p>
 
   <p
-  className={`mt-2 text-base md:text-xl font-bold ${
+  className={`mt-2 text-xs sm:text-sm md:text-xl font-bold ${
       summary.balance >= 0
         ? "text-green-600"
         : "text-red-600"
@@ -184,10 +184,10 @@ export function TransactionList() {
         key={group.date}
         className="space-y-4"
       >
-        <div className="sticky top-0 rounded-2xl border bg-slate-50 p-4">
+        <div className="sticky top-0 rounded-2xl border bg-slate-50 p-2 md:p-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-bold">
+              <h3 className="text-base md:text-lg font-bold">
                 {group.label}
               </h3>
 
@@ -326,10 +326,10 @@ export function TransactionList() {
       </div>
     </div>
 
-    <div className="flex items-start gap-3">
+    <div className="flex flex-col items-end gap-1">
       <div className="text-right">
         <p
-          className={`text-lg font-bold ${
+          className={`text-base md:text-lg font-bold ${
             transaction.type ===
             "income"
               ? "text-green-600"
