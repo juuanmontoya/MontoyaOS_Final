@@ -184,49 +184,65 @@ export function TransactionList() {
         key={group.date}
         className="space-y-4"
       >
-        <div className="sticky top-0 rounded-2xl border bg-slate-50 p-2 md:p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-base md:text-lg font-bold">
-                {group.label}
-              </h3>
+        <button
+  type="button"
+  onClick={() =>
+    setExpandedDays((prev) => ({
+      ...prev,
+      [group.date]: !prev[group.date],
+    }))
+  }
+  className="w-full rounded-2xl border bg-slate-50 p-2 md:p-4"
+>
+  <div className="flex items-center justify-between">
+    <div>
+      <h3 className="text-base md:text-lg font-bold">
+        {group.label}
+      </h3>
 
-              <p className="mt-1 text-sm text-muted-foreground">
-                {group.transactions.length} movimiento(s)
-              </p>
-            </div>
+      <p className="mt-1 text-sm text-muted-foreground">
+        {group.transactions.length} movimiento(s)
+      </p>
+    </div>
 
-            <div className="flex gap-3">
-              <div className="rounded-xl bg-green-100 px-3 py-2 text-right">
-                <p className="text-xs text-green-700">
-                  Ingresos
-                </p>
+    <div className="flex gap-3">
+      <div className="rounded-xl bg-green-100 px-3 py-2 text-right">
+        <p className="text-xs text-green-700">
+          Ingresos
+        </p>
 
-                <p className="text-sm md:text-base font-bold text-green-700">
-                  $
-                  {daySummary.income.toLocaleString(
-                    "es-CO"
-                  )}
-                </p>
-              </div>
+        <p className="text-sm md:text-base font-bold text-green-700">
+          $
+          {daySummary.income.toLocaleString(
+            "es-CO"
+          )}
+        </p>
+      </div>
 
-              <div className="rounded-xl bg-red-100 px-3 py-2 text-right">
-                <p className="text-xs text-red-700">
-                  Gastos
-                </p>
+      <div className="rounded-xl bg-red-100 px-3 py-2 text-right">
+        <p className="text-xs text-red-700">
+          Gastos
+        </p>
 
-                <p className="text-sm md:text-base font-bold text-red-700">
-                  $
-                  {daySummary.expense.toLocaleString(
-                    "es-CO"
-                  )}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <p className="text-sm md:text-base font-bold text-red-700">
+          $
+          {daySummary.expense.toLocaleString(
+            "es-CO"
+          )}
+        </p>
+      </div>
 
-        {group.transactions.map(
+      {expandedDays[group.date] ? (
+        <ChevronDown className="h-5 w-5" />
+      ) : (
+        <ChevronRight className="h-5 w-5" />
+      )}
+    </div>
+  </div>
+</button>
+
+        {expandedDays[group.date] &&
+  group.transactions.map(
                         (
                           transaction
                         ) => {
