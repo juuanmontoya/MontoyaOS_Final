@@ -111,7 +111,7 @@ export function TransactionList() {
     💵 Ingresos
   </p>
 
-  <p className="mt-2 text-xl font-bold text-red-700">
+  <p className="mt-2 text-xs sm:text-sm md:text-xl font-bold text-red-700">
     $
     {summary.income.toLocaleString(
       "es-CO"
