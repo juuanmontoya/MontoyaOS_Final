@@ -16,12 +16,16 @@ import { TransactionTypeToggle } from "@/components/finances/transaction-type-to
 import { AccountTypeToggle } from "@/components/finances/account-type-toggle";
 
 import { DateField } from "@/components/design-system/fields/date-field";
+import { TransactionItemsEditor } from "@/components/finances/transaction-items-editor";
+
+import { categorySupportsItems } from "@/core/finance-engine/category-support";
 
 import { useFinanceStore } from "@/store/finance-store";
 
 import type {
   AccountType,
   CreateTransactionInput,
+  CreateTransactionItemInput,
   TransactionType,
 } from "@/types/finance";
 
@@ -98,12 +102,30 @@ export function TransactionEditor({
         today
     );
 
+const [items, setItems] = useState<
+  CreateTransactionItemInput[]
+>([]);
+
   const [isSaving, setIsSaving] =
     useState(false);
 
   useEffect(() => {
     loadCategories();
   }, [loadCategories]);
+
+  useEffect(() => {
+  if (
+    type === "expense" &&
+    items.length > 0
+  ) {
+    const total = items.reduce(
+      (sum, item) => sum + item.total,
+      0
+    );
+
+    setAmount(total.toString());
+  }
+}, [items, type]);
 
   const filteredCategories =
     useMemo(
@@ -114,6 +136,19 @@ export function TransactionEditor({
         ),
       [categories, type]
     );
+
+const selectedCategory =
+  filteredCategories.find(
+    (category) =>
+      category.id === categoryId
+  );
+
+const supportsItems =
+  selectedCategory
+    ? categorySupportsItems(
+        selectedCategory.name
+      )
+    : false;
 
   const expenseCategories =
     useMemo(
@@ -214,6 +249,7 @@ export function TransactionEditor({
               accountType,
             transaction_date:
               transactionDate,
+              items,
           });
 
           toast.success(
@@ -283,7 +319,11 @@ export function TransactionEditor({
         autoComplete="off"
         disabled={isSaving}
         className="w-full rounded-xl border p-3"
-        placeholder="Descripción"
+        placeholder={
+  supportsItems
+    ? "Lugar de compra (Ej: Farmatodo)"
+    : "Descripción"
+}
         value={description}
         onChange={(e) =>
           setDescription(
@@ -292,21 +332,37 @@ export function TransactionEditor({
         }
       />
 
-      <input
-        type="number"
-        min={1}
-        inputMode="decimal"
-        autoComplete="off"
-        disabled={isSaving}
-        className="w-full rounded-xl border p-3"
-        placeholder="Valor"
-        value={amount}
-        onChange={(e) =>
-          setAmount(
-            e.target.value
-          )
-        }
-      />
+      {type === "income" ||
+!supportsItems ? (
+  <input
+    type="number"
+    min={1}
+    inputMode="decimal"
+    autoComplete="off"
+    disabled={isSaving}
+    className="w-full rounded-xl border p-3"
+    placeholder="Valor"
+    value={amount}
+    onChange={(e) =>
+      setAmount(
+        e.target.value
+      )
+    }
+  />
+) : (
+  <div className="rounded-xl border bg-muted/30 p-3">
+    <p className="text-sm text-muted-foreground">
+      Total calculado automáticamente
+    </p>
+
+    <p className="mt-1 text-2xl font-bold">
+      $
+      {Number(amount).toLocaleString(
+        "es-CO"
+      )}
+    </p>
+  </div>
+)}
 
       <DateField
         value={transactionDate}
@@ -315,6 +371,14 @@ export function TransactionEditor({
         }
         disabled={isSaving}
       />
+
+{type === "expense" &&
+supportsItems && (
+  <TransactionItemsEditor
+    value={items}
+    onChange={setItems}
+  />
+)}
 
       <TransactionSubmitButton
         loading={isSaving}

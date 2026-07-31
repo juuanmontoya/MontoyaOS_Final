@@ -8,6 +8,32 @@ export type AccountType =
   | "cash"
   | "digital";
 
+export interface TransactionItem {
+  id: string;
+
+  transaction_id: string;
+
+  name: string;
+
+  quantity: number;
+
+  unit_price: number;
+
+  total: number;
+
+  created_at: string;
+}
+
+export interface CreateTransactionItemInput {
+  name: string;
+
+  quantity: number;
+
+  unit_price: number;
+
+  total: number;
+}
+
 export interface Transaction {
   id: string;
 
@@ -21,19 +47,13 @@ export interface Transaction {
 
   account_type: AccountType;
 
-  /**
-   * Fecha real en la que ocurrió la transacción.
-   * Formato ISO: YYYY-MM-DD
-   */
   transaction_date: string;
 
-  /**
-   * Fecha en la que fue registrada en la base de datos.
-   * Solo para auditoría y orden secundario.
-   */
   created_at: string;
 
   category?: Category;
+
+  items?: TransactionItem[];
 }
 
 export interface CreateTransactionInput {
@@ -47,10 +67,9 @@ export interface CreateTransactionInput {
 
   account_type: AccountType;
 
-  /**
-   * Formato ISO: YYYY-MM-DD
-   */
   transaction_date: string;
+
+  items?: CreateTransactionItemInput[];
 }
 
 export interface UpdateTransactionInput

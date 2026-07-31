@@ -37,6 +37,11 @@ export function TransactionList() {
       )
     );
 
+  const [expandedTransactions, setExpandedTransactions] =
+    useState<Record<string, boolean>>(
+      {}
+    );
+
   if (transactions.length === 0) {
     return (
       <div className="rounded-3xl border border-dashed p-10 text-center text-muted-foreground">
@@ -117,94 +122,174 @@ export function TransactionList() {
                           const category =
                             transaction.category;
 
+                          const isExpanded =
+                            expandedTransactions[
+                              transaction.id
+                            ] ??
+                            false;
+
                           return (
                             <div
                               key={
                                 transaction.id
                               }
-                              className="rounded-2xl border p-4 transition hover:border-primary/30"
+                              className="rounded-2xl border transition hover:border-primary/30"
                             >
-                              <div className="flex items-start justify-between">
-                                <div className="flex gap-4">
-                                  <div
-                                    className="flex h-12 w-12 items-center justify-center rounded-xl"
-                                    style={{
-                                      backgroundColor:
-                                        category?.color ??
-                                        "#F3F4F6",
-                                    }}
-                                  >
-                                    <span className="text-xl">
-                                      {category?.icon ??
-                                        (transaction.type ===
-                                        "income"
-                                          ? "💰"
-                                          : "💸")}
-                                    </span>
-                                  </div>
+                              <div
+  role="button"
+  tabIndex={0}
+  onClick={() =>
+    setExpandedTransactions((prev) => ({
+      ...prev,
+      [transaction.id]:
+        !prev[transaction.id],
+    }))
+  }
+  onKeyDown={(e) => {
+    if (
+      e.key === "Enter" ||
+      e.key === " "
+    ) {
+      e.preventDefault();
 
-                                  <div>
-                                    <h4 className="font-semibold">
-                                      {
-                                        transaction.description
-                                      }
-                                    </h4>
+      setExpandedTransactions((prev) => ({
+        ...prev,
+        [transaction.id]:
+          !prev[transaction.id],
+      }));
+    }
+  }}
+  className="cursor-pointer p-4"
+>
+  <div className="flex items-start justify-between">
+    <div className="flex items-center gap-4">
+      <div
+        className="flex h-12 w-12 items-center justify-center rounded-xl"
+        style={{
+          backgroundColor:
+            category?.color ??
+            "#F3F4F6",
+        }}
+      >
+        <span className="text-xl">
+          {category?.icon ??
+            (transaction.type ===
+            "income"
+              ? "💰"
+              : "💸")}
+        </span>
+      </div>
 
-                                    <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
-                                      <span>
-                                        {category?.name ??
-                                          "Sin categoría"}
-                                      </span>
+      <div>
+        <h4 className="font-semibold">
+          {transaction.description}
+        </h4>
 
-                                      <span>
-                                        •
-                                      </span>
+        <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+          <span>
+            {category?.name ??
+              "Sin categoría"}
+          </span>
 
-                                      <span className="flex items-center gap-1">
-                                        {transaction.type ===
-                                        "income" ? (
-                                          <ArrowDownRight className="h-4 w-4 text-green-600" />
-                                        ) : (
-                                          <ArrowUpRight className="h-4 w-4 text-red-600" />
-                                        )}
+          <span>•</span>
 
-                                        {transaction.account_type ===
-                                        "cash"
-                                          ? "Efectivo"
-                                          : "Digital"}
-                                      </span>
+          <span className="flex items-center gap-1">
+            {transaction.type ===
+            "income" ? (
+              <ArrowDownRight className="h-4 w-4 text-green-600" />
+            ) : (
+              <ArrowUpRight className="h-4 w-4 text-red-600" />
+            )}
+
+            {transaction.account_type ===
+            "cash"
+              ? "Efectivo"
+              : "Digital"}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div className="flex items-start gap-3">
+      <div className="text-right">
+        <p
+          className={`text-lg font-bold ${
+            transaction.type ===
+            "income"
+              ? "text-green-600"
+              : "text-red-600"
+          }`}
+        >
+          {transaction.type ===
+          "income"
+            ? "+"
+            : "-"}
+          $
+          {transaction.amount.toLocaleString(
+            "es-CO"
+          )}
+        </p>
+      </div>
+
+      <div
+        onClick={(e) =>
+          e.stopPropagation()
+        }
+      >
+        <EditTransactionDialog
+          transaction={transaction}
+        />
+      </div>
+
+      {isExpanded ? (
+        <ChevronDown className="h-5 w-5 text-muted-foreground" />
+      ) : (
+        <ChevronRight className="h-5 w-5 text-muted-foreground" />
+      )}
+    </div>
+  </div>
+</div>
+
+                              {isExpanded &&
+                                transaction.items &&
+                                transaction.items
+                                  .length >
+                                  0 && (
+                                  <div className="border-t bg-muted/20 px-6 py-4">
+                                    <div className="space-y-2">
+                                      {transaction.items.map(
+                                        (
+                                          item
+                                        ) => (
+                                          <div
+                                            key={
+                                              item.id
+                                            }
+                                            className="flex items-center justify-between text-sm"
+                                          >
+                                            <span>
+                                              •{" "}
+                                              {
+                                                item.name
+                                              }
+
+                                              {item.quantity >
+                                                1 &&
+                                                ` x${item.quantity}`}
+                                            </span>
+
+                                            <span className="font-medium">
+                                              $
+                                              {item.total.toLocaleString(
+                                                "es-CO"
+                                              )}
+                                            </span>
+                                          </div>
+                                        )
+                                      )}
                                     </div>
                                   </div>
-                                </div>
-
-                                <div className="text-right">
-                                  <p
-                                    className={`text-lg font-bold ${
-                                      transaction.type ===
-                                      "income"
-                                        ? "text-green-600"
-                                        : "text-red-600"
-                                    }`}
-                                  >
-                                    {transaction.type ===
-                                    "income"
-                                      ? "+"
-                                      : "-"}
-                                    $
-                                    {transaction.amount.toLocaleString(
-                                      "es-CO"
-                                    )}
-                                  </p>
-
-                                  <div className="mt-2 flex justify-end">
-                                    <EditTransactionDialog
-                                      transaction={
-                                        transaction
-                                      }
-                                    />
-                                  </div>
-                                </div>
-                              </div>
+                                )}
                             </div>
                           );
                         }
