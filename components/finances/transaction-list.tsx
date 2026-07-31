@@ -15,6 +15,10 @@ import { groupTransactionsByMonth } from "@/core/finance-engine/group-transactio
 
 import { EditTransactionDialog } from "./edit-transaction-dialog";
 
+import { getMonthSummary } from "@/core/finance-engine/get-month-summary";
+
+import { getDaySummary } from "@/core/finance-engine/get-day-summary";
+
 export function TransactionList() {
   const transactions = useFinanceStore(
     (state) => state.transactions
@@ -57,6 +61,12 @@ export function TransactionList() {
           expandedMonths[
             month.month
           ];
+          const summary =
+  getMonthSummary(
+    month.transactions.flatMap(
+      (day) => day.transactions
+    )
+  );
 
         return (
           <section
@@ -78,19 +88,68 @@ export function TransactionList() {
               }
               className="flex w-full items-center justify-between p-5 text-left"
             >
-              <div>
-                <h2 className="text-xl font-bold capitalize">
-                  {month.label}
-                </h2>
+              <div className="space-y-3">
+  <h2 className="text-xl font-bold capitalize">
+    {month.label}
+  </h2>
 
-                <p className="text-sm text-muted-foreground">
-                  {
-                    month.transactions
-                      .length
-                  }{" "}
-                  día(s)
-                </p>
-              </div>
+  <div className="mt-4 grid grid-cols-3 gap-4">
+    <div className="rounded-2xl bg-green-50 border border-green-100 p-4">
+  <p className="text-xs font-medium uppercase tracking-wide text-green-700">
+    💵 Ingresos
+  </p>
+
+  <p className="mt-2 text-xl font-bold text-green-700">
+    $
+    {summary.income.toLocaleString(
+      "es-CO"
+    )}
+  </p>
+</div>
+
+<div className="rounded-2xl bg-red-50 border border-red-100 p-4">
+  <p className="text-xs font-medium uppercase tracking-wide text-red-700">
+    💸 Gastos
+  </p>
+
+  <p className="mt-2 text-xl font-bold text-red-700">
+    $
+    {summary.expense.toLocaleString(
+      "es-CO"
+    )}
+  </p>
+</div>
+
+<div className="rounded-2xl bg-blue-50 border border-blue-100 p-4">
+  <p className="text-xs font-medium uppercase tracking-wide text-blue-700">
+    📈 Balance
+  </p>
+
+  <p
+    className={`mt-2 text-xl font-bold ${
+      summary.balance >= 0
+        ? "text-green-600"
+        : "text-red-600"
+    }`}
+  >
+    $
+    {summary.balance.toLocaleString(
+      "es-CO"
+    )}
+  </p>
+</div>
+  </div>
+
+  <div className="mt-4 flex flex-wrap gap-3">
+  <div className="rounded-full bg-muted px-4 py-2 text-sm font-medium">
+    📅 {summary.days} días
+  </div>
+
+  <div className="rounded-full bg-muted px-4 py-2 text-sm font-medium">
+    🧾 {summary.transactions} movimientos
+  </div>
+</div>
+</div>
 
               {expanded ? (
                 <ChevronDown className="h-5 w-5" />
@@ -102,20 +161,60 @@ export function TransactionList() {
             {expanded && (
               <div className="space-y-8 border-t p-5">
                 {month.transactions.map(
-                  (group) => (
-                    <section
-                      key={
-                        group.date
-                      }
-                      className="space-y-4"
-                    >
-                      <h3 className="sticky top-0 bg-white py-1 text-lg font-semibold text-muted-foreground">
-                        {
-                          group.label
-                        }
-                      </h3>
+  (group) => {
+    const daySummary =
+      getDaySummary(
+        group.transactions
+      );
 
-                      {group.transactions.map(
+    return (
+      <section
+        key={group.date}
+        className="space-y-4"
+      >
+        <div className="sticky top-0 rounded-2xl border bg-slate-50 p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-bold">
+                {group.label}
+              </h3>
+
+              <p className="mt-1 text-sm text-muted-foreground">
+                {group.transactions.length} movimiento(s)
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <div className="rounded-xl bg-green-100 px-3 py-2 text-right">
+                <p className="text-xs text-green-700">
+                  Ingresos
+                </p>
+
+                <p className="font-bold text-green-700">
+                  $
+                  {daySummary.income.toLocaleString(
+                    "es-CO"
+                  )}
+                </p>
+              </div>
+
+              <div className="rounded-xl bg-red-100 px-3 py-2 text-right">
+                <p className="text-xs text-red-700">
+                  Gastos
+                </p>
+
+                <p className="font-bold text-red-700">
+                  $
+                  {daySummary.expense.toLocaleString(
+                    "es-CO"
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {group.transactions.map(
                         (
                           transaction
                         ) => {
@@ -127,6 +226,11 @@ export function TransactionList() {
                               transaction.id
                             ] ??
                             false;
+
+                            const daySummary =
+  getDaySummary(
+    group.transactions
+  );
 
                           return (
                             <div
@@ -294,9 +398,10 @@ export function TransactionList() {
                           );
                         }
                       )}
-                    </section>
-                  )
-                )}
+                                        </section>
+                  );
+                }
+              )}
               </div>
             )}
           </section>
