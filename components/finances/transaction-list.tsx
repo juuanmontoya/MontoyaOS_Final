@@ -46,6 +46,18 @@ export function TransactionList() {
       {}
     );
 
+    const [expandedDays, setExpandedDays] =
+  useState<Record<string, boolean>>(() =>
+    Object.fromEntries(
+      monthGroups.flatMap((month) =>
+        month.transactions.map((day) => [
+          day.date,
+          true,
+        ])
+      )
+    )
+  );
+
   if (transactions.length === 0) {
     return (
       <div className="rounded-3xl border border-dashed p-10 text-center text-muted-foreground">
@@ -99,7 +111,7 @@ export function TransactionList() {
     💵 Ingresos
   </p>
 
-  <p className="mt-2 text-xl font-bold text-green-700">
+  <p className="mt-2 text-xl font-bold text-red-700">
     $
     {summary.income.toLocaleString(
       "es-CO"
@@ -112,7 +124,7 @@ export function TransactionList() {
     💸 Gastos
   </p>
 
-  <p className="mt-2 text-xl font-bold text-red-700">
+  <p className="mt-2 text-base md:text-xl font-bold text-red-700">
     $
     {summary.expense.toLocaleString(
       "es-CO"
@@ -126,7 +138,7 @@ export function TransactionList() {
   </p>
 
   <p
-    className={`mt-2 text-xl font-bold ${
+  className={`mt-2 text-base md:text-xl font-bold ${
       summary.balance >= 0
         ? "text-green-600"
         : "text-red-600"
@@ -190,7 +202,7 @@ export function TransactionList() {
                   Ingresos
                 </p>
 
-                <p className="font-bold text-green-700">
+                <p className="text-sm md:text-base font-bold text-green-700">
                   $
                   {daySummary.income.toLocaleString(
                     "es-CO"
@@ -203,7 +215,7 @@ export function TransactionList() {
                   Gastos
                 </p>
 
-                <p className="font-bold text-red-700">
+                <p className="text-sm md:text-base font-bold text-red-700">
                   $
                   {daySummary.expense.toLocaleString(
                     "es-CO"
