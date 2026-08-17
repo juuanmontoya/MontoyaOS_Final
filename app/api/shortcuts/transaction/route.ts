@@ -2,45 +2,92 @@ import { NextResponse } from "next/server";
 
 import { supabase } from "@/core/services/supabase";
 
-import type {
-  CreateTransactionInput,
-} from "@/types/finance";
-
-export async function POST(
-  request: Request
-) {
+export async function POST(request: Request) {
   try {
-    const body =
-      (await request.json()) as Partial<CreateTransactionInput>;
+    const body = await request.json();
+
+    const description =
+      typeof body.description === "string"
+        ? body.description.trim()
+        : "";
+
+    const amount = Number(body.amount);
+
+    const type =
+      typeof body.type === "string"
+        ? body.type.trim().toLowerCase()
+        : "";
+
+    const category_id =
+      typeof body.category_id === "string"
+        ? body.category_id.trim()
+        : "";
+
+    const account_type =
+      typeof body.account_type === "string"
+        ? body.account_type.trim().toLowerCase()
+        : "";
+
+    const transaction_date =
+      typeof body.transaction_date === "string"
+        ? body.transaction_date.trim()
+        : "";
 
     if (
-      !body.description ||
-      body.amount === undefined ||
-      !body.type ||
-      !body.category_id ||
-      !body.account_type ||
-      !body.transaction_date
+      !description ||
+      !Number.isFinite(amount) ||
+      !type ||
+      !category_id ||
+      !account_type ||
+      !transaction_date
     ) {
       return NextResponse.json(
         {
           success: false,
-          error:
-            "Faltan datos requeridos.",
+          error: "Faltan datos requeridos.",
+          received: {
+            description,
+            amount: body.amount,
+            type: body.type,
+            category_id,
+            account_type: body.account_type,
+            transaction_date: body.transaction_date,
+          },
         },
+        { status: 400 }
+      );
+    }
+
+    if (type !== "income" && type !== "expense") {
+      return NextResponse.json(
         {
-          status: 400,
-        }
+          success: false,
+          error: `Tipo de transacción inválido: "${type}"`,
+        },
+        { status: 400 }
+      );
+    }
+
+    if (
+      account_type !== "cash" &&
+      account_type !== "digital"
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Tipo de cuenta inválido: "${account_type}"`,
+        },
+        { status: 400 }
       );
     }
 
     const transaction = {
-      description: body.description,
-      amount: Number(body.amount),
-      type: body.type,
-      category_id: body.category_id,
-      account_type: body.account_type,
-      transaction_date:
-        body.transaction_date,
+      description,
+      amount,
+      type,
+      category_id,
+      account_type,
+      transaction_date,
     };
 
     const {
@@ -72,9 +119,7 @@ export async function POST(
           success: false,
           error: error.message,
         },
-        {
-          status: 500,
-        }
+        { status: 500 }
       );
     }
 
@@ -91,12 +136,9 @@ export async function POST(
     return NextResponse.json(
       {
         success: false,
-        error:
-          "No se pudo crear la transacción.",
+        error: "No se pudo crear la transacción.",
       },
-      {
-        status: 500,
-      }
+      { status: 500 }
     );
   }
 }

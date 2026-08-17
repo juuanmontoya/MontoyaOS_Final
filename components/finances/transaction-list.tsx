@@ -19,8 +19,6 @@ import { getMonthSummary } from "@/core/finance-engine/get-month-summary";
 
 import { getDaySummary } from "@/core/finance-engine/get-day-summary";
 
-import { QuickTransaction } from "./quick-transaction";
-
 export function TransactionList() {
   const transactions = useFinanceStore(
     (state) => state.transactions
@@ -70,7 +68,6 @@ export function TransactionList() {
 
   return (
   <div className="space-y-8">
-    <QuickTransaction />
       {monthGroups.map((month) => {
         const expanded =
           expandedMonths[
