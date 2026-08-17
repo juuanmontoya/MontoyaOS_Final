@@ -35,16 +35,20 @@ export async function GET() {
       );
     }
 
-    const categories = data ?? [];
-
-    const categoryMap = Object.fromEntries(
-      categories.map((category) => [
-        `${category.icon} ${category.name}`,
-        category.id,
-      ])
+    const categories = (data ?? []).map(
+      (category) => ({
+        id: category.id,
+        name: category.name,
+        icon: category.icon,
+        color: category.color,
+        type: category.type,
+        label: `${category.icon} ${category.name}`,
+      })
     );
 
-    return NextResponse.json(categoryMap);
+    return NextResponse.json({
+      categories,
+    });
   } catch (error) {
     console.error(
       "❌ SHORTCUT CATEGORIES ERROR",
@@ -54,7 +58,8 @@ export async function GET() {
     return NextResponse.json(
       {
         success: false,
-        error: "No se pudieron obtener las categorías.",
+        error:
+          "No se pudieron obtener las categorías.",
       },
       {
         status: 500,
