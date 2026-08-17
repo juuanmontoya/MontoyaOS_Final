@@ -35,10 +35,16 @@ export async function GET() {
       );
     }
 
-    return NextResponse.json({
-      success: true,
-      categories: data ?? [],
-    });
+    const categories = data ?? [];
+
+    const categoryMap = Object.fromEntries(
+      categories.map((category) => [
+        `${category.icon} ${category.name}`,
+        category.id,
+      ])
+    );
+
+    return NextResponse.json(categoryMap);
   } catch (error) {
     console.error(
       "❌ SHORTCUT CATEGORIES ERROR",
